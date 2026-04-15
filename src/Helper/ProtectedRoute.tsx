@@ -1,5 +1,6 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../Context/AuthContext";
+import PageLoader from "../Components/UI/PageLoader";
 
 
 interface ProtectedRouteProps{
@@ -9,10 +10,10 @@ interface ProtectedRouteProps{
 
 export function ProtectedRoute({children , allowed}:ProtectedRouteProps){
   const {isAuth , loading , permissions} = useAuth();
-  const loaction = useLocation();
+
 
   if(loading){
-    return <div>Loading ... </div>;
+    return <PageLoader/>;
   }
   if(!isAuth){
     return <Navigate to="/login" replace/>
@@ -34,7 +35,7 @@ export function PublicRoute({children}:PublicRouteProps){
   const {isAuth , loading, permissions} = useAuth();
 
   if(loading){
-    return <div>Loading...</div>;
+    return ;
   }
   if(isAuth){
     if(permissions.dashboard)return<Navigate to="/dashboard" replace/>;

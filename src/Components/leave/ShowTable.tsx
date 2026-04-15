@@ -9,6 +9,7 @@ import {
 import toast from "react-hot-toast";
 import styles from "./ShowTable.module.css";
 import { useAuth } from "../../Context/AuthContext";
+import TableSkeleton from "../UI/TableSkeleton";
 
 type Person = {
   Name: string;
@@ -21,16 +22,15 @@ type Person = {
   remarks: string | null;
 };
 
-interface Props {
-  email: string;
-}
-
 const ShowTable = () => {
-  const {user} = useAuth()
+  const {user , permissions} = useAuth()
   const [rows, setRows] = useState<Person[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
 
   async function fetchData() {
-    if (user?.email === "mainadmin@gmail.com") {
+    try{
+      setLoading(true);
+    if (permissions.dashboard== true || permissions.management == true) {
       const { data, error } = await SupabaseClient
         .from("leave_requests")
         .select(`
@@ -66,6 +66,10 @@ const ShowTable = () => {
         setRows(flat);
       }
     }
+  }
+  finally{
+    setLoading(false);
+  }
   }
 
   useEffect(() => {
@@ -127,7 +131,9 @@ const ShowTable = () => {
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>My Leave Requests</h2>
-
+       {loading?(
+        <TableSkeleton rows={5} cols={8}></TableSkeleton>
+      ):(
       <table className={styles.table}>
         <thead className={styles.thead}>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -158,7 +164,7 @@ const ShowTable = () => {
             </tr>
           ))}
         </tbody>
-      </table>
+      </table>)}
     </div>
   );
 };

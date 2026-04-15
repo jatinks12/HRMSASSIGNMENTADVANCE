@@ -22,3 +22,9 @@
 .nav a:hover {
   text-decoration: underline;
 }
+
+.active-link {
+  color: yellow;
+  font-weight: bold;
+  border-bottom: 2px solid yellow;
+}

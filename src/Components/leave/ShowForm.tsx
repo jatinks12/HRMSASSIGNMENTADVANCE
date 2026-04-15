@@ -198,4 +198,4 @@ const ShowForm = () => {
   );
 };
 
-export default observer(ShowForm);
+export default ShowForm;
