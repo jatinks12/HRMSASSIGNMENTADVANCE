@@ -1,0 +1,121 @@
+
+/* Page container */
+.body {
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f4f6f9;
+}
+
+/* Main container */
+.container {
+  width: 80%;
+  margin: auto;
+  padding: 20px;
+}
+
+/* Headings */
+.title {
+  text-align: center;
+  color: #333;
+}
+
+.subtitle {
+  text-align: left;
+  color: #4CAF50;
+}
+
+/* Form Styling */
+.form {
+  background: white;
+  padding: 20px;
+  border-radius: 6px;
+  width: 40%;
+  margin: auto;
+  box-shadow: 0px 3px 10px rgba(0,0,0,0.1);
+}
+
+.label {
+  font-weight: bold;
+  display: block;
+  margin-top: 12px;
+}
+
+/* Inputs */
+.input,
+.select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+/* Buttons */
+.button {
+  margin-top: 15px;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Submit button */
+.submitBtn {
+  background-color: #4CAF50;
+  color: white;
+  width: 100%;
+}
+
+.submitBtn:hover {
+  background-color: #45a049;
+}
+
+/* Modal */
+.view {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.viewModal {
+  background: white;
+  padding: 25px;
+  border-radius: 8px;
+  width: 350px;
+  text-align: center;
+  box-shadow: 0px 4px 15px rgba(0,0,0,0.3);
+}
+
+/* Table wrapper fix */
+.tableWrapper {
+  margin-top: 30px;
+  width: 100%;
+  overflow-x: auto;   /* 🔥 KEY FIX */
+}
+
+/* Fix PrimeReact table overflow */
+:global(.p-datatable) {
+  min-width: 900px;   /* ensures proper column spacing */
+}
+
+/* Make paginator visible */
+:global(.p-paginator) {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+/* Fix table header */
+:global(.p-datatable-thead > tr > th) {
+  white-space: nowrap;
+}
+
+/* Fix table cells */
+:global(.p-datatable-tbody > tr > td) {
+  white-space: nowrap;
+}
