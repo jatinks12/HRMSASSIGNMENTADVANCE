@@ -1,4 +1,4 @@
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate} from "react-router-dom";
 import { useAuth } from "../Context/AuthContext";
 import PageLoader from "../Components/UI/PageLoader";
 
@@ -35,7 +35,7 @@ export function PublicRoute({children}:PublicRouteProps){
   const {isAuth , loading, permissions} = useAuth();
 
   if(loading){
-    return ;
+    return <PageLoader/>;
   }
   if(isAuth){
     if(permissions.dashboard)return<Navigate to="/dashboard" replace/>;

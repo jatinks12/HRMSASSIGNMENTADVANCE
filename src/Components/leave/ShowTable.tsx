@@ -19,7 +19,7 @@ type Person = {
   total_days: string;
   reason: string;
   status: string;
-  remarks: string | null;
+  remark: string | null;
 };
 
 const ShowTable = () => {
@@ -39,31 +39,18 @@ const ShowTable = () => {
       if (error) {
         toast.error(error.message);
       } else {
-        const flat = data.map((row: any) => ({
-          ...row,
-          remarks: row.remark ?? null,
-        }));
-        setRows(flat);
+        setRows(data);
       }
     } else {
       const { data, error } = await SupabaseClient
         .from("leave_requests")
-        .select(`
-          *,
-          leave_approvals ( remarks )
-        `)
-        .eq("Email", user?.email);
+        .select(`* `)
+        .eq("user_id",user?.id)
 
       if (error) {
         toast.error(error.message);
       } else {
-        console.log(data);
-
-        const flat = data.map((row: any) => ({
-          ...row,
-          remarks: row.leave_approvals?.[0]?.remarks ?? null,
-        }));
-        setRows(flat);
+        setRows(data);
       }
     }
   }
@@ -73,8 +60,8 @@ const ShowTable = () => {
   }
 
   useEffect(() => {
-    if (user?.email) fetchData();
-  }, [user?.email]);
+    if (user?.id) fetchData();
+  }, [user?.id]);
 
   const columns = useMemo<ColumnDef<Person>[]>(() => [
     {
@@ -109,10 +96,10 @@ const ShowTable = () => {
       },
     },
     {
-      accessorKey: "remarks",
-      header: "Remarks",
+      accessorKey: "remark",
+      header: "Remark",
       cell: ({ row }) => {
-        const remarks = row.original.remarks;
+        const remarks = row.original.remark ;
         return (
           <span className={styles.remarks}>
             {remarks ? remarks : "—"}

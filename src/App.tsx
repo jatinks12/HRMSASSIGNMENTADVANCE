@@ -1,5 +1,4 @@
 import {
-  Link,
   Navigate,
   NavLink,
   Route,
@@ -22,7 +21,7 @@ import Management from "./Components/Mangement/Management";
 import PageLoader from "./Components/UI/PageLoader";
 
 const App = () => {
-  const { isAuth, permissions, loading, logout } = useAuth();
+  const { isAuth, user, permissions, loading, logout } = useAuth();
   const location = useLocation();
 
   const hideheaderRoutes = ["/login"];
@@ -33,7 +32,7 @@ const App = () => {
     <>
       {!shouldHideHeader && isAuth && (
         <header className="header">
-          <div className="logo">HRMS</div>
+          <div className="logo">HRMS-- {user?.email} -- {user?.name} </div>
           <nav className="nav">
             {permissions.dashboard && (
               <NavLink
