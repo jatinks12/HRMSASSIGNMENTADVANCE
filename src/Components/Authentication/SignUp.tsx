@@ -156,7 +156,7 @@ const SignUp = () => {
   });
 
   // ✅ Fix 7: onChange handler for picture
-  const handlePictureChange = (e) => {
+  const handlePictureChange = (e:any) => {
     const file = e.target.files[0];
     if (file) {
       formik.setFieldValue("picture", file);
