@@ -57,7 +57,7 @@ const App = () => {
               </NavLink>
             )}
           </nav>
-          <button style={{ backgroundColor: "red" }} onClick={logout}>
+          <button className="logout-btn" onClick={logout}>
             Logout
           </button>
         </header>
