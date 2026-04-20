@@ -4,34 +4,32 @@ import styles from "./ShowForm.module.css";
 import * as Yup from "yup";
 import { SupabaseClient } from "../../Helper/Supabase";
 import toast from "react-hot-toast";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useAuth } from "../../Context/AuthContext";
 
-
 const ShowForm = () => {
-  const{user}=useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
-  const calculateWorkingDays  = (start : string , end:string) =>{
-    if(!start||!end)return"";
+  const calculateWorkingDays = (start: string, end: string) => {
+    if (!start || !end) return "";
 
-    let count =0;
+    let count = 0;
     let current = new Date(start);
-    const last  = new Date(end);
+    const last = new Date(end);
 
-    while(current <= last){
+    while (current <= last) {
       const day = current.getDay();
 
-      if(day !== 0 && day!== 6){
+      if (day !== 0 && day !== 6) {
         count++;
       }
-      current.setDate(current.getDate()+1);
+      current.setDate(current.getDate() + 1);
     }
     return count.toString();
-  }
+  };
 
- 
   const formik = useFormik({
     initialValues: {
       startDate: "",
@@ -41,7 +39,9 @@ const ShowForm = () => {
       leave_type: "",
     },
     validationSchema: Yup.object({
-      startDate: Yup.date().required("Start Date is required").min(new Date(),"Start date must be in the future"),
+      startDate: Yup.date()
+        .required("Start Date is required")
+        .min(new Date(), "Start date must be in the future"),
       endDate: Yup.date()
         .required("End Date is required")
         .test(
@@ -58,52 +58,85 @@ const ShowForm = () => {
       leave_type: Yup.string().required("Leave type is required"),
       reason: Yup.string().required("Reason is required"),
     }),
-    onSubmit: async (values) => {
-      // console.log(values);
+   onSubmit: async (values) => {
+  try {
+    const startDate = new Date(values.startDate)
+      .toISOString()
+      .split("T")[0];
+    const endDate = new Date(values.endDate)
+      .toISOString()
+      .split("T")[0];
 
-      const { data, error } = await SupabaseClient.from("leave_types")
-        .select("id")
-        .eq("name", values.leave_type)
-        .maybeSingle();
-      if (data) {
-        
-      } else {
-        console.log("error", error);
-      }
-      const { error: err } = await SupabaseClient.from("leave_requests").insert(
-        [
-          {
-            user_id: user?.id,
-            Name: user?.name,
-            Email: user?.email,
-            leave_type_id: data,
-            department_id: user?.deptId,
-            start_date: values.startDate,
-            end_date: values.endDate,
-            total_days: values.total_day,
-            reason: values.reason,
-            status: "Pending",
-          },
-        ],
-      );
-      if (err) {
-        toast.error("err");
-        console.log("err",err)
-      } else {
-        toast.success("leave applied");
-        navigate("/leavetable");
-      }
-      formik.resetForm();
-    },
-  });
+  
+    const { data: overlapping, error: overlapError } =
+      await SupabaseClient.from("leave_requests")
+        .select("start_date, end_date, status")
+        .eq("user_id", user?.id)
+        .in("status", ["pending", "approved"])
+        .lte("start_date", endDate)
+        .gte("end_date", startDate);
 
-    useEffect (()=>{
-    const {startDate , endDate}  = formik.values;
-    if(startDate && endDate){
-      const days = calculateWorkingDays(startDate , endDate);
-      formik.setFieldValue("total_day",days);
+    if (overlapError) {
+      toast.error("Could not validate dates");
+      return;
     }
-   },[formik.values.startDate , formik.values.endDate]);
+
+    if (overlapping && overlapping.length > 0) {
+      const conflict = overlapping[0];
+      toast.error(
+        `You already have a leave from ${conflict.start_date} to ${conflict.end_date} (${conflict.status})`
+      );
+      return;
+    }
+
+   
+    const { data: leaveType, error: typeError } =
+      await SupabaseClient.from("leave_types")
+        .select("id")
+        .eq("Leave_Type_Name", values.leave_type)
+        .maybeSingle();
+
+    if (!leaveType?.id) {
+      toast.error("Invalid leave type");
+      return;
+    }
+
+    const { error: err } = await SupabaseClient.from("leave_requests").insert([
+      {
+        user_id: user?.id,
+        Name: user?.name,
+        Email: user?.email,
+        leave_type_id: leaveType.id,
+        department_id: user?.deptId,
+        start_date: startDate,
+        end_date: endDate,
+        total_days: values.total_day,
+        reason: values.reason,
+        status: "pending", 
+      },
+    ]);
+
+    if (err) {
+      toast.error(err.message);
+      return;
+    }
+
+    toast.success("Leave applied successfully");
+    navigate("/leavetable");
+    formik.resetForm();
+  } catch (err) {
+    console.log(err);
+    toast.error("Something went wrong");
+  }
+  },});
+
+  useEffect(() => {
+    const { startDate, endDate } = formik.values;
+    if (startDate && endDate) {
+      const days = calculateWorkingDays(startDate, endDate);
+      formik.setFieldValue("total_day", days);
+    }
+  }, [formik.values.startDate, formik.values.endDate]);
 
   return (
     <>
@@ -116,7 +149,7 @@ const ShowForm = () => {
           <div className={styles.inputGroup}>
             <label>Start Date</label>
             <input
-              type="datetime-local"
+              type="date"
               name="startDate"
               value={formik.values.startDate}
               onChange={formik.handleChange}
@@ -130,7 +163,7 @@ const ShowForm = () => {
           <div className={styles.inputGroup}>
             <label>End Date</label>
             <input
-              type="datetime-local"
+              type="date"
               name="endDate"
               value={formik.values.endDate}
               onChange={formik.handleChange}
@@ -147,7 +180,7 @@ const ShowForm = () => {
               type="text"
               name="total_day"
               value={formik.values.total_day}
-              readOnly 
+              readOnly
               disabled
             />
             {formik.touched.total_day && formik.errors.total_day && (

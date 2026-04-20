@@ -5,10 +5,13 @@ import toast from "react-hot-toast";
 import styles from "./ApproveLeave.module.css";
 import { useAuth } from "../../Context/AuthContext";
 import Spinner from "../UI/Spinner";
-import TanstackTable, { type TableParams } from "./TanstackTable";
+import TanstackTable, {
+  type TableParams,
+} from "../../SharedComponents/TanstackTable";
 
 type Person = {
   id: number;
+  avatar_url: string;
   Name: string;
   Email: string;
   start_date: string;
@@ -25,6 +28,7 @@ const ApproveLeave = () => {
   const [actionLoading, setActionLoading] = useState<number | null>(null);
   const [totalCount, setTotal] = useState(0);
   const remarksRef = useRef<{ [key: number]: string }>({});
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const fetchData = useCallback(async (params: TableParams) => {
     setLoading(true);
@@ -32,7 +36,7 @@ const ApproveLeave = () => {
       const { page, pageSize, search, sortColumn, sortDirection } = params;
       const from = page * pageSize;
       const to = from + pageSize - 1;
-      let query = SupabaseClient.from("leave_requests")
+      let query = SupabaseClient.from("employee_leave_view")
         .select("*", { count: "exact" })
         .order(sortColumn, { ascending: sortDirection === "asc" })
         .range(from, to);
@@ -79,7 +83,7 @@ const ApproveLeave = () => {
           remarks: remark,
         },
         { onConflict: "leave_request_id" },
-      );
+      );        
       if (error) {
         toast.error(
           `${decision === "approved" ? "Approved" : "Rejected"} failed`,
@@ -99,13 +103,24 @@ const ApproveLeave = () => {
       setActionLoading(null);
     }
   }
-
+  console.log(rows);
   const columns = useMemo<ColumnDef<Person>[]>(
     () => [
       {
         id: "index",
         header: "S.No",
         cell: ({ row }) => row.index + 1,
+      },
+      {
+        id: "avatar",
+        header: "Avatar",
+        cell: ({ row }) => (
+          <img
+            src={row.original.avatar_url}
+            onClick={() => setSelectedImage(row.original.avatar_url)}
+            style={{ width: "30px", height: "30px", borderRadius: "50%",  objectFit: "cover"}}
+          ></img>
+        ),
       },
       { accessorKey: "Name", header: "Name" },
       { accessorKey: "Email", header: "Email" },
@@ -133,6 +148,7 @@ const ApproveLeave = () => {
           );
         },
       },
+
       {
         id: "actions",
         header: "Actions",
@@ -180,7 +196,6 @@ const ApproveLeave = () => {
           );
         },
       },
-      
     ],
     [actionLoading],
   );
@@ -235,6 +250,19 @@ const ApproveLeave = () => {
         onParamsChange={fetchData}
         totalCount={totalCount}
       ></TanstackTable>
+      {selectedImage && (
+  <div
+    className={styles.modalOverlay}
+    onClick={() => setSelectedImage(null)}
+  >
+    <div
+      className={styles.modalContent}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <img src={selectedImage} className={styles.modalImage} />
+    </div>
+  </div>
+)}
     </div>
   );
 };
