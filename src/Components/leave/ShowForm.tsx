@@ -1,6 +1,5 @@
 import { useFormik } from "formik";
 
-import { observer } from "mobx-react-lite";
 import styles from "./ShowForm.module.css";
 import * as Yup from "yup";
 import { SupabaseClient } from "../../Helper/Supabase";
@@ -63,11 +62,11 @@ const ShowForm = () => {
       // console.log(values);
 
       const { data, error } = await SupabaseClient.from("leave_types")
-        .select("*")
+        .select("id")
         .eq("name", values.leave_type)
         .maybeSingle();
       if (data) {
-        // console.log("data" ,data , values.leave_type );
+        
       } else {
         console.log("error", error);
       }
@@ -77,7 +76,7 @@ const ShowForm = () => {
             user_id: user?.id,
             Name: user?.name,
             Email: user?.email,
-            leave_type_id: data.id,
+            leave_type_id: data,
             department_id: user?.deptId,
             start_date: values.startDate,
             end_date: values.endDate,
@@ -88,7 +87,8 @@ const ShowForm = () => {
         ],
       );
       if (err) {
-        console.log("err", err);
+        toast.error("err");
+        console.log("err",err)
       } else {
         toast.success("leave applied");
         navigate("/leavetable");
@@ -147,7 +147,8 @@ const ShowForm = () => {
               type="text"
               name="total_day"
               value={formik.values.total_day}
-              readOnly
+              readOnly 
+              disabled
             />
             {formik.touched.total_day && formik.errors.total_day && (
               <span className={styles.error}>{formik.errors.total_day}</span>
@@ -198,4 +199,4 @@ const ShowForm = () => {
   );
 };
 
-export default observer(ShowForm);
+export default ShowForm;

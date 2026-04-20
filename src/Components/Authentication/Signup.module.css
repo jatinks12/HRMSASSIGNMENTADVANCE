@@ -63,3 +63,17 @@
   /* margin-top: 5px; */
   margin-bottom:5px;
 }
+
+.previewContainer {
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.previewImage {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+}

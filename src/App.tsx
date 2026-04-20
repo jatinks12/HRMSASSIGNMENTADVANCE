@@ -1,4 +1,10 @@
-import { Link, Navigate, Route, Routes, useLocation } from "react-router-dom";
+import {
+  Navigate,
+  NavLink,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
 import { useAuth } from "./Context/AuthContext";
 import { Toaster } from "react-hot-toast";
 import { ProtectedRoute, PublicRoute } from "./Helper/ProtectedRoute";
@@ -12,11 +18,10 @@ import ApproveLeave from "./Components/leave/ApproveLeave";
 import ShowTable from "./Components/leave/ShowTable";
 import Dashboard from "./Components/Dashboard/Dashboard";
 import Management from "./Components/Mangement/Management";
-
-
+import PageLoader from "./Components/UI/PageLoader";
 
 const App = () => {
-  const { isAuth, permissions, loading, logout } = useAuth();
+  const { isAuth, user, permissions, loading, logout } = useAuth();
   const location = useLocation();
 
   const hideheaderRoutes = ["/login"];
@@ -27,25 +32,43 @@ const App = () => {
     <>
       {!shouldHideHeader && isAuth && (
         <header className="header">
-          <div className="logo">HRMS</div>
+          <div className="logo">HRMS-- {user?.email} -- {user?.name} </div>
           <nav className="nav">
-            {permissions.dashboard && <Link to="/dashboard">Dashboard</Link>}
-            <Link to="/leave">Leave</Link>
-            {permissions.management && <Link to="/management">Management</Link>}
+            {permissions.dashboard && (
+              <NavLink
+                to="/dashboard"
+                className={({ isActive }) => (isActive ? "active-link" : "")}
+              >
+                Dashboard
+              </NavLink>
+            )}
+            <NavLink
+              to="/leave"
+              className={({ isActive }) => (isActive ? "active-link" : "")}
+            >
+              Leave
+            </NavLink>
+            {permissions.management && (
+              <NavLink
+                to="/management"
+                className={({ isActive }) => (isActive ? "active-link" : "")}
+              >
+                Management
+              </NavLink>
+            )}
           </nav>
-          <button style={{ backgroundColor: "red" }} onClick={logout}>
+          <button className="logout-btn" onClick={logout}>
             Logout
           </button>
         </header>
       )}
       <Toaster position="top-right" reverseOrder={false} />
       <Routes>
-        debugger;
         <Route
           path="/"
           element={
             loading ? (
-              <div>Loading...</div>
+              <PageLoader/>
             ) : !isAuth ? (
               <Navigate to="/login" replace />
             ) : permissions.dashboard ? (
@@ -57,16 +80,39 @@ const App = () => {
             )
           }
         />
-
-        <Route path="/login" element={<PublicRoute><Login/></PublicRoute>}/>
-
-        <Route path="/signup" element={<ProtectedRoute allowed={permissions.management}><SignUp/></ProtectedRoute>}/>
-
-        <Route path="/dashboard" element={<ProtectedRoute allowed={permissions.dashboard}><Dashboard/></ProtectedRoute>}/>
-
-        <Route path="/leave" element={<ProtectedRoute allowed={true}><Leave/></ProtectedRoute>}/>
-        
-             <Route
+        <Route
+          path="/login"
+          element={
+            <PublicRoute>
+              <Login />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            <ProtectedRoute allowed={permissions.management}>
+              <SignUp />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute allowed={permissions.dashboard}>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/leave"
+          element={
+            <ProtectedRoute allowed={true}>
+              <Leave />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/applyleave"
           element={
             <ProtectedRoute allowed={permissions.applyLeave}>
@@ -74,16 +120,14 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/approveleave"
           element={
             <ProtectedRoute allowed={permissions.approveLeave}>
-              <ApproveLeave/>
+              <ApproveLeave />
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/leavetable"
           element={
@@ -92,7 +136,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/management"
           element={
