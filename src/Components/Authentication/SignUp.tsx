@@ -31,15 +31,17 @@ const SignUp = () => {
       department: "",
       photo: null,
     },
+
+   
     validationSchema: Yup.object({
       name: Yup.string()
-        .min(3, "Name must be at least 3 character")
+        .min(3, "Name must be at least 3 characters")
         .required("Name is required"),
       phoneNumber: Yup.string()
         .required("Phone number is required")
         .matches(/^[0-9]{10}$/, "Phone number must be exactly 10 digits"),
       email: Yup.string()
-        .email("Invalid email format (example:- test@gmail.com)")
+        .email("Invalid email format (example: test@gmail.com)")
         .required("Email is required"),
       password: Yup.string()
         .min(6, "Password must be at least 6 characters")
@@ -47,7 +49,10 @@ const SignUp = () => {
       role: Yup.string().required("Role is required"),
       department: Yup.string().required("Department is required"),
     }),
-    onSubmit: async (values) => {
+
+    
+    onSubmit: async (values, { resetForm }) => {
+      setLoading(true);
       try {
         setLoading(true);
         const { data: sessionData } = await SupabaseClient.auth.getSession();
@@ -149,6 +154,20 @@ const SignUp = () => {
       }
     },
   });
+
+  // ✅ Fix 7: onChange handler for picture
+  const handlePictureChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      formik.setFieldValue("picture", file);
+      if (preview) {
+        URL.revokeObjectURL(preview);  // purani URL memory se hatao
+      }
+      setPreview(URL.createObjectURL(file));
+    }
+  };
+
+  
   return (
     <div className={styles.container}>
       {loading ? (
