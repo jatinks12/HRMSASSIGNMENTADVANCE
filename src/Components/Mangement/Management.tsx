@@ -3,29 +3,33 @@
   import { SupabaseClient } from "../../Helper/Supabase";
   import toast from "react-hot-toast";
   import styles from "./Management.module.css";
-  import { Link } from "react-router-dom";
+ import EmployeeForm from "./EmployeeForm";
 
-  interface Idata {
-    id: string;
-    Name: string;
+ 
+
+export type Employee = {
+    id : string;
+    Name : string;
     Email: string;
+    phone : string;
     role: string;
     department: string;
-    phone: string;
-  }
+    avatar_url:string;
 
+};
   const Management = () => {
-    const [employees, setEmployee] = useState<Idata[]>([]);
+    const [employees, setEmployee] = useState<Employee[]>([]);
     const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(4);
     const [totalRecords, setTotalRecords] = useState(0);
     const [sortField, setSortField] = useState<string | null>(null);
     const [sortOrder, setSortOrder] = useState<1 | -1 | null>(null);
     const [filters, setFilters] = useState<any>({});
-    const [viewEmployee, setViewEmployee] = useState<Idata | null>(null);
-    const [editEmployee, setEditEmployee] = useState<Idata | null>(null);
+    const [viewEmployee, setViewEmployee] = useState<Employee | null>(null);
+   // const [editEmployee, setEditEmployee] = useState<Employee | null>(null);
     const [loading, setLoading] = useState(false);
-
+    const [showModal,setShowModal]= useState(false);
+    const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
  const fetchData = async (page: number, limit: number) => {
   setLoading(true);
 
@@ -66,13 +70,14 @@
 
   if (error) { toast.error(error.message); return; }
 
-  const flat: Idata[] = data.map((emp: any) => ({
+  const flat: Employee[] = data.map((emp: any) => ({
     id:         emp.id,
     Name:       emp.full_name,
     Email:      emp.Email,
     phone:      emp.phone,
     role:       emp.role || "—",
     department: emp.department || "—",
+    avatar_url: emp.avatar_url,
   }));
 
   setEmployee(flat);
@@ -103,34 +108,82 @@
       fetchData(page, limit);
     };
 
-    const handleEditSave = async (updated: Idata) => {
-      const { error } = await SupabaseClient
-        .from("profiles")
-        .update({
-          full_name: updated.Name,
-          phone: updated.phone,
-        })
-        .eq("id", updated.id);
+    // const handleEditSave = async (updated: Employee) => {
+    //   const { error } = await SupabaseClient
+    //     .from("profiles")
+    //     .update({
+    //       full_name: updated.Name,
+    //       phone: updated.phone,
+    //     })
+    //     .eq("id", updated.id);
 
-      if (error) {
-        toast.error(error.message);
-        return;
-      }
+    //   if (error) {
+    //     toast.error(error.message);
+    //     return;
+    //   }
+      
+    //   toast.success("Employee Updated");
+    //   setEditEmployee(null);
+    //   fetchData(page, limit);
+    // };
+    const handleSave = async (data: Employee) => {
+  let error;
 
-      toast.success("Employee Updated");
-      setEditEmployee(null);
-      fetchData(page, limit);
-    };
+  if (data.id) {
+    // UPDATE
+    const res = await SupabaseClient
+      .from("profiles")
+      .update({
+        full_name: data.Name,
+        phone: data.phone,
+      })
+      .eq("id", data.id);
+
+    error = res.error;
+  } else {
+    // INSERT
+    const res = await SupabaseClient
+      .from("profiles")
+      .insert([
+        {
+          full_name: data.Name,
+          Email: data.Email,
+          phone: data.phone,
+        },
+      ]);
+
+    error = res.error;
+  }
+
+  if (error) {
+    toast.error(error.message);
+    return;
+  }
+
+  toast.success(data.id ? "Updated!" : "Added!");
+
+  setShowModal(false);
+  fetchData(page, limit);
+};
 
     return (
       <div className={styles.tableWrapper}>
-        <button ><Link to="/signup">AddEmployee</Link></button>
+        <button onClick={()=>{
+          setSelectedEmployee(null);
+          setShowModal(true);
+         }}> 
+         Add Employee
+         </button>
         <h1 className={styles.title}>Employees Management</h1>
 
         <EmployeeTable
           employees={employees}
           deleteEmployee={deleteEmployee}
-          editEmployee={setEditEmployee}
+          editEmployee={(emp)=>{
+             setSelectedEmployee(emp);
+             setViewEmployee(null); 
+             setShowModal(true);
+          }}
           viewEmployee={setViewEmployee}
           totalRecords={totalRecords}
           limit={limit}
@@ -146,9 +199,8 @@
             setSortOrder(order);
           }}
           onFilterChange={(f) => setFilters(f)}
-        />
-            
-        {viewEmployee && (
+        />        
+        {viewEmployee && !showModal &&(
           <div className={styles.view}>
             <div className={styles.viewModal}>
               <h2>Employee Details</h2>
@@ -164,47 +216,59 @@
           </div>
         )}
 
-        {/* Edit Modal */}
-        {editEmployee && (
-          <div className={styles.view}>
-            <div className={styles.viewModal}>
-              <h2>Edit Employee</h2>
+           <EmployeeForm
+  visible={showModal}
+  onClose={() => setShowModal(false)}
+  onSave={handleSave}
+  initialData={selectedEmployee}
+/>
+      </div>  // {editEmployee && (
+        //   <div className={styles.view}>
+        //     <div className={styles.viewModal}>
+        //       <h2>Edit Employee</h2>
 
-              <input
-                className={styles.input}
-                value={editEmployee.Name}
-                onChange={(e) =>
-                  setEditEmployee({ ...editEmployee, Name: e.target.value })
-                }
-              />
+        //       <input
+        //         className={styles.input}
+        //         value={editEmployee.Name}
+        //         onChange={(e) =>
+        //           setEditEmployee({ ...editEmployee, Name: e.target.value })
+        //         }
+        //       />
 
-              <input
-                className={styles.input}
-                value={editEmployee.phone}
-                onChange={(e) =>
-                  setEditEmployee({ ...editEmployee, phone: e.target.value })
-                }
-              />
+//               <input
+//                 className={styles.input}
+//                 value={editEmployee.phone}
+//                 onChange={(e) =>
+//                   setEditEmployee({ ...editEmployee, phone: e.target.value })
+//                 }
+//               />
 
-              <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
-                <button
-                  className={styles.button}
-                  onClick={() => handleEditSave(editEmployee)}
-                >
-                  Save
-                </button>
-                <button
-                  className={styles.button}
-                  onClick={() => setEditEmployee(null)}
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  };
+//               <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+//                 <button
+//                   className={styles.button}
+//                   onClick={() => handleSave(editEmployee)}
+//                 >
+//                   Save
+//                 </button>
+//                 <button
+//                   className={styles.button}
+//                   onClick={() => setEditEmployee(null)}
+//                 >
+//                   Cancel
+//                 </button>
+//                 <EmployeeForm
+//   visible={showModal}
+//   onClose={() => setShowModal(false)}
+//   onSave={handleSave}
+//   initialData={selectedEmployee}
+// />
+//               </div>
+            // </div>
+          // </div>
+        // )}
+      
+  
+   );
+ };
 
   export default Management;
