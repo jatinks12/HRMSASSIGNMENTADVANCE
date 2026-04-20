@@ -4,8 +4,13 @@ import styles from "./Signup.module.css";
 import { SupabaseClient } from "../../Helper/Supabase";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { useState } from "react";
+
 const SignUp = () => {
   const navigate = useNavigate();
+  const [preview, setPreview] = useState(null);
+  const [loading, setLoading] = useState(false);
+
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -14,16 +19,19 @@ const SignUp = () => {
       password: "",
       role: "",
       department: "",
+      picture: null,
     },
+
+   
     validationSchema: Yup.object({
       name: Yup.string()
-        .min(3, "Name must be at least 3 character")
+        .min(3, "Name must be at least 3 characters")
         .required("Name is required"),
       phoneNumber: Yup.string()
         .required("Phone number is required")
         .matches(/^[0-9]{10}$/, "Phone number must be exactly 10 digits"),
       email: Yup.string()
-        .email("Invalid email format (example:- test@gmail.com)")
+        .email("Invalid email format (example: test@gmail.com)")
         .required("Email is required"),
       password: Yup.string()
         .min(6, "Password must be at least 6 characters")
@@ -31,82 +39,160 @@ const SignUp = () => {
       role: Yup.string().required("Role is required"),
       department: Yup.string().required("Department is required"),
     }),
-    onSubmit: async (values) => {
+
+    
+    onSubmit: async (values, { resetForm }) => {
+      setLoading(true);
       try {
+        
+        const { data: adminSession } = await SupabaseClient.auth.getSession();
+
         const { data, error } = await SupabaseClient.auth.signUp({
           email: values.email,
           password: values.password,
         });
 
-
         if (error) {
           toast.error(error.message);
           return;
         }
-        await SupabaseClient.auth.signOut();
+
         const userId = data?.user?.id;
         if (!userId) {
           toast.error("Signup failed, try again.");
           return;
         }
 
-        const { data: roleData } = await SupabaseClient.from(
-          "roles",
-        )
+        const { data: roleData } = await SupabaseClient.from("roles")
           .select("id")
           .eq("emprole", values.role)
           .maybeSingle();
-        
-          if(!roleData){
-            toast.error("Role not found");
+
+        if (!roleData) {
+          toast.error("Role not found");
+          return;
+        }
+
+        const { data: deptData } = await SupabaseClient.from("departments")
+          .select("id")
+          .eq("empDepartment", values.department)
+          .maybeSingle();
+
+        if (!deptData) {
+          toast.error("Department not found");
+          return;
+        }
+
+       
+        let imageUrl = null;
+        if (values.picture) {
+          const fileExt = values.picture.name.split(".").pop();
+          const fileName = `${userId}.${fileExt}`;
+
+          const { error: uploadError } = await SupabaseClient.storage
+            .from("profile_image")
+            .upload(fileName, values.picture);
+
+          if (uploadError) {
+            toast.error("Photo upload failed");
             return;
           }
 
-        const { data: deptData } =
-          await SupabaseClient.from("departments")
-            .select("id")
-            .eq("empDepartment",values.department)
-            .maybeSingle();
-        
-            if(!deptData){
-              toast.error("Department not found");
-              return;
-            }
+          const { data: urlData } = SupabaseClient.storage
+            .from("profile_image")
+            .getPublicUrl(fileName);
 
-        const { data: profileData } =
-          await SupabaseClient.from("profiles")
-            .insert([
-              {
-                id: userId,
-                full_name: values.name,
-                phone: values.phoneNumber,
-                role_id: roleData.id,
-                department_id: deptData.id,
-                Email: values.email,
-              },
-            ])
-            .select()
-            .single();
-          if(!profileData){
-              toast.error("Profile creation failed");
-              return;
-            }
+          imageUrl = urlData.publicUrl;
+        }
+
+        const { data: profileData } = await SupabaseClient.from("profiles")
+          .insert([
+            {
+              id: userId,
+              full_name: values.name,
+              phone: values.phoneNumber,
+              role_id: roleData.id,
+              department_id: deptData.id,
+              Email: values.email,
+              image_url: imageUrl,  
+            },
+          ])
+          .select()
+          .single();
+
+        if (!profileData) {
+          toast.error("Profile creation failed");
+          return;
+        }
+
+       
+        resetForm();
+        if (preview) {
+          URL.revokeObjectURL(preview);
+          setPreview(null);
+        }
+
+       
+        if (adminSession?.session) {
+          await SupabaseClient.auth.setSession({
+            access_token: adminSession.session.access_token,
+            refresh_token: adminSession.session.refresh_token,
+          });
+        }
+
         toast.success("Signup successful!");
-          navigate("/login");
-     
+        navigate("/signup");
+
       } catch (err) {
         console.error(err);
-        toast.error("something went wrong");
+        toast.error("Something went wrong");
+      } finally {
+        setLoading(false);
       }
     },
   });
+
+  // ✅ Fix 7: onChange handler for picture
+  const handlePictureChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      formik.setFieldValue("picture", file);
+      if (preview) {
+        URL.revokeObjectURL(preview);  // purani URL memory se hatao
+      }
+      setPreview(URL.createObjectURL(file));
+    }
+  };
+
+  
   return (
     <div className={styles.container}>
       <form onSubmit={formik.handleSubmit} className={styles.form}>
         <h2 className={styles.title}>SignUp</h2>
-        <label htmlFor="name" className={styles.label}>
-          Name
+
+        {/* ✅ Preview */}
+        {preview && (
+          <img
+            src={preview}
+            alt="Preview"
+            className={styles.preview}
+            style={{ width: 80, height: 80, borderRadius: "50%", objectFit: "cover" }}
+          />
+        )}
+
+        {/* ✅ Picture Upload */}
+        <label htmlFor="picture" className={styles.label}>
+          Profile Photo
         </label>
+        <input
+          id="picture"
+          type="file"
+          accept="image/*"
+          onChange={handlePictureChange}
+          className={styles.input}
+        />
+
+        <label htmlFor="name" className={styles.label}>Name</label>
         <input
           id="name"
           type="text"
@@ -116,30 +202,27 @@ const SignUp = () => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           className={styles.input}
-        ></input>
+        />
         {formik.touched.name && formik.errors.name && (
           <div className={styles.error}>{formik.errors.name}</div>
         )}
 
-        <label htmlFor="phoneNumber" className={styles.label}>
-          Phone Number
-        </label>
+        <label htmlFor="phoneNumber" className={styles.label}>Phone Number</label>
         <input
           id="phoneNumber"
-          type="number"
+          type="text"
           name="phoneNumber"
-          placeholder="Enter your PhoneNumber"
+          placeholder="Enter your Phone Number"
           value={formik.values.phoneNumber}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           className={styles.input}
-        ></input>
+        />
         {formik.touched.phoneNumber && formik.errors.phoneNumber && (
           <div className={styles.error}>{formik.errors.phoneNumber}</div>
         )}
-        <label htmlFor="email" className={styles.label}>
-          Email
-        </label>
+
+        <label htmlFor="email" className={styles.label}>Email</label>
         <input
           id="email"
           type="email"
@@ -149,13 +232,12 @@ const SignUp = () => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           className={styles.input}
-        ></input>
+        />
         {formik.touched.email && formik.errors.email && (
           <div className={styles.error}>{formik.errors.email}</div>
         )}
-        <label htmlFor="password" className={styles.label}>
-          Password
-        </label>
+
+        <label htmlFor="password" className={styles.label}>Password</label>
         <input
           id="password"
           type="password"
@@ -163,16 +245,14 @@ const SignUp = () => {
           placeholder="Enter your password"
           value={formik.values.password}
           onChange={formik.handleChange}
-          className={styles.input}
           onBlur={formik.handleBlur}
-        ></input>
+          className={styles.input}
+        />
         {formik.touched.password && formik.errors.password && (
           <div className={styles.error}>{formik.errors.password}</div>
         )}
 
-        <label htmlFor="department" className={styles.label}>
-          Department
-        </label>
+        <label htmlFor="department" className={styles.label}>Department</label>
         <select
           id="department"
           name="department"
@@ -196,9 +276,7 @@ const SignUp = () => {
           <div className={styles.error}>{formik.errors.department}</div>
         )}
 
-        <label htmlFor="role" className={styles.label}>
-          Role
-        </label>
+        <label htmlFor="role" className={styles.label}>Role</label>
         <select
           id="role"
           name="role"
@@ -222,10 +300,13 @@ const SignUp = () => {
           <div className={styles.error}>{formik.errors.role}</div>
         )}
 
-        <button type="submit" className={styles.button}>
-          Submit
+        <button
+          type="submit"
+          className={styles.button}
+          disabled={loading}
+        >
+          {loading ? "Submitting..." : "Submit"}
         </button>
-        
       </form>
     </div>
   );
