@@ -1,63 +1,84 @@
 .container {
-  padding: 20px;
+  padding: 16px;
+  background: #fff;
+  border-radius: 10px;
 }
 
 .title {
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 600;
-  margin-bottom: 15px;
-}
-
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  background-color: #ffffff;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.thead {
-  background-color: #f5f7fa;
-}
-
-.th {
-  padding: 12px;
-  text-align: left;
-  font-size: 14px;
-  font-weight: 600;
-  border-bottom: 1px solid #ddd;
-}
-
-.td {
-  padding: 12px;
-  font-size: 14px;
-  border-bottom: 1px solid #eee;
-}
-
-.tr:hover {
-  background-color: #f9fbff;
-  transition: 0.2s ease;
+  margin-bottom: 12px;
+  color: #222;
 }
 
 /* Status badges */
 .status {
   padding: 4px 10px;
   border-radius: 20px;
-  color: white;
   font-size: 12px;
-  font-weight: 500;
   text-transform: capitalize;
+  font-weight: 500;
 }
 
 .approved {
-  background-color: #28a745;
+  background: #e6f9f0;
+  color: #16a34a;
 }
 
 .rejected {
-  background-color: #dc3545;
+  background: #fee2e2;
+  color: #dc2626;
 }
 
 .pending {
-  background-color: #f39c12;
+  background: #fff7ed;
+  color: #ea580c;
+}
+
+/* Remarks */
+.remarks {
+  font-size: 13px;
+  color: #555;
+}
+
+.ongoing {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modalContent {
+  position: relative;
+  max-width: 90%;
+  max-height: 90%;
+}
+
+.modalImage {
+  width: 100%;
+  max-height: 90vh;
+  border-radius: 10px;
+}
+
+.closeBtn {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  font-weight: bold;
 }

@@ -11,24 +11,26 @@ import "primereact/resources/themes/lara-light-blue/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 import { SupabaseClient } from "../../Helper/Supabase";
+import { Dialog } from "primereact/dialog";
 
-type SortField = "Name" | "Email";
+type SortField = "Name" | "Email" | "Department" | "Role";
 type SortOrder = "asc" | "desc";
 
 const Dashboard = () => {
+  const [Preview, Setpreview] = useState("");
   const [search, setSearch] = useState("");
   const [searchEmail, setSearchEmail] = useState("");
+  const [departmentFilter, setDepartmentFilter] = useState("");
+  const [roleFilter, setRoleFilter] = useState("");
+
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [debouncedEmail, setDebouncedEmail] = useState("");
 
   const [Page, setPage] = useState(1);
-  const [limit, setLimit] = useState(5);
+  const [limit, setLimit] = useState(3);
 
   const [employees, setEmployees] = useState<any[]>([]);
   const [totalCount, setTotalCount] = useState(0);
-
-  const [departmentFilter, setDepartmentFilter] = useState("");
-  const [roleFilter, setRoleFilter] = useState("");
 
   const [sortField, setSortField] = useState<SortField>("Name");
   const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
@@ -36,10 +38,13 @@ const Dashboard = () => {
   const [status, setStatus] = useState({ total: 0, leaves: 0, pending: 0 });
   const [loading, setLoading] = useState(false);
 
+  const [visible, setVisible] = useState(false);
+const [selectedImage, setSelectedImage] = useState("");
+
   const isFirstRender = useRef(true);
   const skipPageEffect = useRef(false);
 
-  // 🔹 Debounce
+
   useEffect(() => {
     const t = setTimeout(() => setDebouncedSearch(search), 400);
     return () => clearTimeout(t);
@@ -50,40 +55,35 @@ const Dashboard = () => {
     return () => clearTimeout(t);
   }, [searchEmail]);
 
-  // 🔹 Fetch Stats
+
   async function fetchStatus() {
     const { data } = await SupabaseClient
       .from("leave_requests")
       .select("status");
 
-   const { count: employeeCount } = await SupabaseClient
-    .from("profiles")
-    .select("*", { count: "exact", head: true });
+    const { count } = await SupabaseClient
+      .from("profiles")
+      .select("*", { count: "exact", head: true });
 
     if (data) {
       setStatus({
-        total: employeeCount||0,
+        total: count || 0,
         leaves: data.filter(e => e.status === "approved").length,
         pending: data.filter(e => e.status === "Pending").length,
       });
+
     }
   }
 
-  // 🔹 Fetch Employees
+
   const fetchEmployees = useCallback(async (page: number, rowLimit: number) => {
     setLoading(true);
 
     let query = SupabaseClient
-      .from("profiles")
-      .select(`
-        id,
-        full_name,
-        Email,
-        roles(emprole),
-        departments!profiles_department_id_fkey(empDepartment)
-      `, { count: "exact" });
+      .from("employee_view")
+      .select("*", { count: "exact" });
 
-    // Search
+
     if (debouncedSearch) {
       query = query.ilike("full_name", `%${debouncedSearch}%`);
     }
@@ -92,14 +92,25 @@ const Dashboard = () => {
       query = query.ilike("Email", `%${debouncedEmail}%`);
     }
 
-    // Sorting
+    if (departmentFilter) {
+      query = query.ilike("department", `%${departmentFilter}%`);
+    }
+
+    if (roleFilter) {
+      query = query.ilike("role", `%${roleFilter}%`);
+    }
+
+
     if (sortField === "Name") {
       query = query.order("full_name", { ascending: sortOrder === "asc" });
     } else if (sortField === "Email") {
       query = query.order("Email", { ascending: sortOrder === "asc" });
+    } else if (sortField === "Department") {
+      query = query.order("department", { ascending: sortOrder === "asc" });
+    } else if (sortField === "Role") {
+      query = query.order("role", { ascending: sortOrder === "asc" });
     }
 
-    // Pagination
     const from = (page - 1) * rowLimit;
     query = query.range(from, from + rowLimit - 1);
 
@@ -111,34 +122,35 @@ const Dashboard = () => {
       return;
     }
 
-    let formatted = (data || []).map((item: any) => ({
+    const formatted = (data || []).map((item: any) => ({
       Name: item.full_name,
       Email: item.Email,
-      role: item.roles?.emprole || "",
-      department: item.departments?.empDepartment || "",
+      role: item.role,
+      department: item.department,
+      Preview: item.avatar_url,
     }));
 
-    // ⚠️ Frontend filtering (due to Supabase join limits)
-    if (departmentFilter) {
-      formatted = formatted.filter(e => e.department === departmentFilter);
-    }
 
-    if (roleFilter) {
-      formatted = formatted.filter(e => e.role === roleFilter);
-    }
-
+    console.log("Formatted employees:", formatted);
     setEmployees(formatted);
     setTotalCount(count || 0);
     setLoading(false);
-  }, [debouncedSearch, debouncedEmail, sortField, sortOrder, departmentFilter, roleFilter]);
+  }, [
+    debouncedSearch,
+    debouncedEmail,
+    departmentFilter,
+    roleFilter,
+    sortField,
+    sortOrder
+  ]);
 
-  // 🔹 Initial load
+
   useEffect(() => {
     fetchStatus();
     fetchEmployees(1, limit);
   }, []);
 
-  // 🔹 Filter/sort change
+
   useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
@@ -149,7 +161,7 @@ const Dashboard = () => {
     fetchEmployees(1, limit);
   }, [fetchEmployees]);
 
-  // 🔹 Page change
+
   useEffect(() => {
     if (isFirstRender.current) return;
     if (skipPageEffect.current) {
@@ -157,16 +169,16 @@ const Dashboard = () => {
       return;
     }
     fetchEmployees(Page, limit);
-  }, [Page]);
+  }, [Page, limit]);
 
-  // 🔹 Chart Data
+
   const chartData = [
     { name: "Total", value: status.total },
     { name: "Approved", value: status.leaves },
     { name: "Pending", value: status.pending },
   ];
 
-  // 🔹 Sorting
+
   function handleSort(field: SortField) {
     if (sortField === field) {
       setSortOrder(prev => (prev === "asc" ? "desc" : "asc"));
@@ -181,7 +193,7 @@ const Dashboard = () => {
     return <span>{sortOrder === "asc" ? "↑" : "↓"}</span>;
   };
 
-  // 🔹 Headers
+
   const nameHeader = (
     <>
       <div onClick={() => handleSort("Name")}>
@@ -190,6 +202,7 @@ const Dashboard = () => {
       <InputText value={search} onChange={(e) => setSearch(e.target.value)} />
     </>
   );
+
 
   const emailHeader = (
     <>
@@ -202,37 +215,84 @@ const Dashboard = () => {
 
   const deptHeader = (
     <>
-      <div>Department</div>
-      <select value={departmentFilter} onChange={(e) => setDepartmentFilter(e.target.value)}>
-        <option value="">All</option>
-        <option value="techOps">techOps</option>
-        <option value="HR">HR</option>
-      </select>
+      <div onClick={() => handleSort("Department")}>
+        Department <SortIcon field="Department" />
+      </div>
+      <InputText
+        value={departmentFilter}
+        onChange={(e) => setDepartmentFilter(e.target.value)}
+        placeholder="Search Department"
+      />
     </>
   );
 
+ const imageBody = (rowData: any) => {
+  return (
+    <>
+      <img
+        src={rowData.Preview}
+        alt="profile"
+        style={{
+          width: "40px",
+          height: "40px",
+          borderRadius: "50%",
+          objectFit: "cover",
+          cursor: "pointer"  // ✅ add karo
+        }}
+        referrerPolicy="no-referrer"
+        onClick={() => {           // ✅ add karo
+          setSelectedImage(rowData.Preview);
+          setVisible(true);
+        }}
+      />
+
+      
+    </>
+  );
+};
+
+
+  const Previewheader = (
+    <div>
+      Profile Photo
+    </div>
+  );
   const roleHeader = (
     <>
-      <div>Role</div>
-      <select value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)}>
-        <option value="">All</option>
-        <option value="Software Developer">Software Developer</option>
-        <option value="Full Stack">Full Stack</option>
-      </select>
+      <div onClick={() => handleSort("Role")}>
+        Role <SortIcon field="Role" />
+      </div>
+      <InputText
+        value={roleFilter}
+        onChange={(e) => setRoleFilter(e.target.value)}
+        placeholder="Search Role"
+      />
     </>
   );
 
   return (
     <div className={styles.dashboard}>
+      
+      <Dialog
+        visible={visible}
+        onHide={() => setVisible(false)}
+        header="Profile Photo"
+      >
+        <img
+          src={selectedImage}
+          alt="Profile Big"
+          style={{ width: "350px", height: "350px", objectFit: "cover", borderRadius: "10px" }}
+          referrerPolicy="no-referrer"
+        />
+      </Dialog>
 
-      {/* Cards */}
       <div className={styles.cards}>
         <div>Total Employees: {status.total}</div>
         <div>Approved Leaves: {status.leaves}</div>
         <div>Pending: {status.pending}</div>
       </div>
 
-      {/* Charts */}
+
       <div className={styles.charts}>
         <ResponsiveContainer width="50%" height={300}>
           <BarChart data={chartData}>
@@ -246,29 +306,45 @@ const Dashboard = () => {
 
         <ResponsiveContainer width="50%" height={300}>
           <PieChart>
+            <Pie
+              data={chartData}
+              dataKey="value"
+              nameKey="name"
+              outerRadius={100}
+              label={({ name, value }) => `${name}: ${value}`}
+            ></Pie>
             <Pie data={chartData} dataKey="value" outerRadius={100}>
               <Cell fill="#0088FE" />
               <Cell fill="#00C49F" />
               <Cell fill="#FF8042" />
             </Pie>
+
+            <Tooltip />
           </PieChart>
         </ResponsiveContainer>
       </div>
 
-      {/* Table */}
+
       <DataTable
         value={employees}
         loading={loading}
         paginator
-        lazy
         rows={limit}
+        rowsPerPageOptions={[3, 4, 5]}
         totalRecords={totalCount}
+        lazy
         first={(Page - 1) * limit}
         onPage={(e) => {
-          setPage(e.page! + 1);
-          setLimit(e.rows);
+          if (e.rows !== limit) {
+            setLimit(e.rows);
+            setPage(1);
+          } else {
+            setPage(e.page! + 1);
+          }
         }}
       >
+
+        <Column field="Preview" header={Previewheader} body={imageBody} />
         <Column field="Name" header={nameHeader} />
         <Column field="Email" header={emailHeader} />
         <Column field="department" header={deptHeader} />
