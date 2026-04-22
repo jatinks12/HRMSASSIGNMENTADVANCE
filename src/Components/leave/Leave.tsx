@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import styles from "./leave.module.css";
 import { useAuth } from "../../Context/AuthContext";
+import { FormattedMessage } from "react-intl";
 
 
 
@@ -11,7 +12,7 @@ const Leave = ()=> {
 
   return (
     <div className={styles.container}>
-      <h2>Leave Management</h2>
+      <h2><FormattedMessage id="heading.name"/></h2>
 
       <div className={styles.cardContainer}>
         
@@ -19,21 +20,21 @@ const Leave = ()=> {
           className={styles.card} 
           onClick={() => navigate("/applyleave")}
         >
-          <h3>Apply Leave</h3>
+          <h3><FormattedMessage id="leave.apply"/></h3>
         </div>}
 
        {permissions.approveLeave && <div
           className={styles.card}
           onClick={() => navigate("/approveleave")}
         >
-          <h3>Approve Leave</h3>
+          <h3><FormattedMessage id ="leave.approve"/></h3>
         </div>}
 
      {permissions.leaveTable &&   <div
           className={styles.card}
           onClick={() => navigate("/leavetable")}
         >
-          <h3>View Leave Table</h3>
+          <h3><FormattedMessage id="leave.table"/></h3>
         </div>}
 
       </div>

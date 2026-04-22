@@ -7,8 +7,10 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useAuth } from "../../Context/AuthContext";
+import { FormattedMessage, useIntl } from "react-intl";
 
 const ShowForm = () => {
+  const intl = useIntl();
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -40,13 +42,13 @@ const ShowForm = () => {
     },
     validationSchema: Yup.object({
       startDate: Yup.date()
-        .required("Start Date is required")
-        .min(new Date(), "Start date must be in the future"),
+        .required(intl.formatMessage({id:"validation.startRequired"}))
+        .min(new Date(), intl.formatMessage({id:"validation.startFuture"})),
       endDate: Yup.date()
-        .required("End Date is required")
+        .required(intl.formatMessage({id:"validation.endRequired"}))
         .test(
           "is-after-start",
-          "End date must be after start date",
+           intl.formatMessage({id:"validation.endAfterStart"}),
           function (value) {
             const { startDate } = this.parent;
             return value && startDate
@@ -54,9 +56,9 @@ const ShowForm = () => {
               : true;
           },
         ),
-      total_day: Yup.string().required("Total days is required"),
-      leave_type: Yup.string().required("Leave type is required"),
-      reason: Yup.string().required("Reason is required"),
+      total_day: Yup.string().required(intl.formatMessage({id:"validation.totalDaysRequired"})),
+      leave_type: Yup.string().required(intl.formatMessage({id:"validation.typeRequired"})),
+      reason: Yup.string().required(intl.formatMessage({id:"validation.reasonRequired"})),
     }),
    onSubmit: async (values) => {
   try {
@@ -90,7 +92,7 @@ const ShowForm = () => {
     }
 
    
-    const { data: leaveType, error: typeError } =
+    const { data: leaveType } =
       await SupabaseClient.from("leave_types")
         .select("id")
         .eq("Leave_Type_Name", values.leave_type)
@@ -142,12 +144,12 @@ const ShowForm = () => {
     <>
       <form onSubmit={formik.handleSubmit} className={styles.form}>
         <div className={styles.header}>
-          <span>Leave Application</span>
+          <span><FormattedMessage id="leave.application"/></span>
         </div>
 
         <div className={styles.formGrid}>
           <div className={styles.inputGroup}>
-            <label>Start Date</label>
+            <label><FormattedMessage id="leave.startDate"/></label>
             <input
               type="date"
               name="startDate"
@@ -161,7 +163,7 @@ const ShowForm = () => {
           </div>
 
           <div className={styles.inputGroup}>
-            <label>End Date</label>
+            <label><FormattedMessage id="leave.endDate"/></label>
             <input
               type="date"
               name="endDate"
@@ -175,7 +177,7 @@ const ShowForm = () => {
           </div>
 
           <div className={styles.inputGroup}>
-            <label>Total Days</label>
+            <label><FormattedMessage id="leave.totalDays"/></label>
             <input
               type="text"
               name="total_day"
@@ -189,19 +191,19 @@ const ShowForm = () => {
           </div>
 
           <div className={styles.inputGroup}>
-            <label>Leave Type</label>
+            <label><FormattedMessage id="leave.type"/></label>
             <select
               name="leave_type"
               value={formik.values.leave_type}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
             >
-              <option value="">Select leave type</option>
-              <option value="Maternity Leave">Maternity Leave</option>
-              <option value="Earned Leave">Earned Leave</option>
-              <option value="Casual Leave">Casual Leave</option>
-              <option value="Sick Leave">Sick Leave</option>
-              <option value="Unpaid Leave">Unpaid Leave</option>
+              <option value=""><FormattedMessage id="leave.selectType"/></option>
+              <option value="Maternity Leave"><FormattedMessage id="leave.type.maternity"/></option>
+              <option value="Earned Leave"><FormattedMessage id="leave.type.earned"/></option>
+              <option value="Casual Leave"><FormattedMessage id="leave.type.casual"/></option>
+              <option value="Sick Leave"><FormattedMessage id="leave.type.sick"/></option>
+              <option value="Unpaid Leave"><FormattedMessage id="leave.type.unpaid"/></option>
             </select>
 
             {formik.touched.leave_type && formik.errors.leave_type && (
@@ -210,10 +212,10 @@ const ShowForm = () => {
           </div>
 
           <div className={styles.inputGroupFull}>
-            <label>Reason</label>
+            <label><FormattedMessage id="leave.reason"/></label>
             <textarea
               name="reason"
-              placeholder="Enter your reason..."
+              placeholder={intl.formatMessage({id:"leave.reason.placeholder"})}
               value={formik.values.reason}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
@@ -225,7 +227,7 @@ const ShowForm = () => {
         </div>
 
         <button type="submit" className={styles.submitBtn}>
-          Apply Leave
+          <FormattedMessage id="leave.apply"/>
         </button>
       </form>
     </>

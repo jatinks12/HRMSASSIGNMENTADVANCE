@@ -108,20 +108,26 @@ button:disabled {
 }
 
 .modalContent {
+  position: relative;
   max-width: 90%;
   max-height: 90%;
 }
 
 .modalImage {
   width: 100%;
-  height: auto;
   max-height: 90vh;
   border-radius: 10px;
 }
-.modalImage {
-  transition: transform 0.3s ease;
-}
 
-.modalImage:hover {
-  transform: scale(1.03);
+.closeBtn {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  font-weight: bold;
 }

@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { SupabaseClient } from "../Helper/Supabase";
+import {  profileconst } from "../SharedComponents/Constants/const";
 
 
 
@@ -64,7 +65,7 @@ const isFetching = useRef(false);
     
     try {
       const { data: profile, error } = await SupabaseClient
-        .from("profiles")
+        .from(profileconst)
         .select(`*, roles(can_view_dashboard, can_view_management, can_view_leave_table, can_apply_leave, can_approve_leave,emprole), departments!profiles_department_id_fkey(empDepartment)`)
         .eq("id", userId)
         .single();

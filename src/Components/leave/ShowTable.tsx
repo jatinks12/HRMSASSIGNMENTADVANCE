@@ -5,8 +5,12 @@ import toast from "react-hot-toast";
 import styles from "./ShowTable.module.css";
 import { useAuth } from "../../Context/AuthContext";
 
-import type { TableParams } from "../../SharedComponents/TanstackTable";
-import TanstackTable from "../../SharedComponents/TanstackTable";
+import TanstackTable, {
+  DEFAULT_FILTERS,
+  DEFAULT_DATE_PRESETS,
+  type TableParams,
+} from "../../SharedComponents/TanstackTable";
+import { FormattedMessage, useIntl } from "react-intl";
 
 type Person = {
   Name: string;
@@ -22,6 +26,7 @@ type Person = {
 };
 
 const ShowTable = () => {
+  const intl=useIntl();
   const { user, permissions } = useAuth();
   const [rows, setRows] = useState<Person[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -32,21 +37,34 @@ const ShowTable = () => {
     async (params: TableParams) => {
       setLoading(true);
       try {
-        const { page, pageSize, search, sortColumn, sortDirection } = params;
+        const { page, pageSize, search, sortColumn, sortDirection,filterMode,dateRange } = params;
         const from = page * pageSize;
-        const to = from + pageSize - 1;
+        const to = from + pageSize - 1;  
+        const today = new Date().toISOString().split("T")[0];
 
         let query = SupabaseClient.from("employee_leave_view")
           .select("*", { count: "exact" })
           .order(sortColumn, { ascending: sortDirection === "asc" })
           .range(from, to);
+
+          if(!permissions.dashboard && !permissions.management){
+            query=query.eq("user_id",user?.id);
+          }
+          if(filterMode === "approved"){
+            query = query.eq("status","approved").gte("start_date",today);
+          }else if(filterMode === "pending"){
+            query = query.eq("status","pending");
+          }else if(filterMode === "rejected"){
+            query = query.eq("status","rejected");
+          }else if(filterMode === "past"){
+            query=query.lt("start_date",today);
+          }
+          if(dateRange?.from) query=query.gte("start_date",dateRange.from);
+          if(dateRange?.to) query= query.lte("start_date",dateRange.to);
         if (search) {
           query = query.or(`Name.ilike.%${search}%,Email.ilike.%${search}%`);
         }
 
-        if (!permissions.dashboard && !permissions.management) {
-          query = query.eq("user_id", user?.id);
-        }
         const { data, count, error } = await query;
 
         if (error) {
@@ -69,6 +87,8 @@ const ShowTable = () => {
       search: "",
       sortColumn: "created_at",
       sortDirection: "desc",
+      filterMode:"all",
+      dateRange:{from:"",to:""},
     });
   }, [user?.id]);
 
@@ -76,12 +96,12 @@ const ShowTable = () => {
     () => [
       {
         id: "index",
-        header: "S.No",
+        header:  intl.formatMessage({id:"table.sno"}) ,
         cell: ({ row }) => row.index + 1,
       },
       {
         id: "avatar",
-        header: "Avatar",
+        header:  intl.formatMessage({id:"table.avatar"}) ,
         cell: ({ row }) => (
           <img
             src={row.original.avatar_url}
@@ -96,42 +116,39 @@ const ShowTable = () => {
           ></img>
         ),
       },
-      { accessorKey: "Name", header: "Name" },
-      { accessorKey: "Email", header: "Email" },
-      { accessorKey: "start_date", header: "Start Date" },
-      { accessorKey: "end_date", header: "End Date" },
-      { accessorKey: "total_days", header: "Days" },
-      { accessorKey: "reason", header: "Reason" },
+      { accessorKey: "Name", header: intl.formatMessage({id:"table.name"}) },
+      { accessorKey: "Email", header:  intl.formatMessage({id:"table.email"})  },
+      { accessorKey: "start_date", header:  intl.formatMessage({id:"table.startDate"})  },
+      { accessorKey: "end_date", header: intl.formatMessage({id:"table.endDate"}) },
+      { accessorKey: "total_days", header:  intl.formatMessage({id:"table.days"})  },
+      { accessorKey: "reason", header:  intl.formatMessage({id:"table.reason"})  },
       {
         accessorKey: "status",
-        header: "Status",
+        header:  intl.formatMessage({id:"table.status"}) ,
         cell: ({ row }) => {
           const status = row.original.status;
           const today = new Date().toISOString().split("T")[0];
-          const isOngoing =
-            status === "approved" && row.original.end_date >= today;
-          console.log(row.original.end_date, today);
-          console.log(isOngoing ? "On Leave" : status);
+         
+          
           return (
             <span
               className={`${styles.status} ${
-                isOngoing
-                  ? styles.ongoing
-                  : status === "approved"
+              
+                   status === "approved"
                     ? styles.approved
                     : status === "rejected"
                       ? styles.rejected
                       : styles.pending
               }`}
             >
-              {isOngoing ? "On Leave" : status}
+              { intl.formatMessage({id:`status.${status}`})}
             </span>
           );
         },
       },
       {
         accessorKey: "remark",
-        header: "Remark",
+        header: intl.formatMessage({id:"table.title.remarks"}),
         cell: ({ row }) => {
           const remarks = row.original.remarks;
           return (
@@ -140,7 +157,7 @@ const ShowTable = () => {
         },
       },
     ],
-    [setSelectedImage],
+    [setSelectedImage,intl],
   );
 
   // const table = useReactTable({
@@ -151,7 +168,7 @@ const ShowTable = () => {
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.title}>My Leave Requests</h2>
+      <h2 className={styles.title}><FormattedMessage id="leave.myRequests"/></h2>
       {/* {loading ? (
         <TableSkeleton rows={5} cols={8}></TableSkeleton>
       ) : (
@@ -192,6 +209,8 @@ const ShowTable = () => {
         loading={loading}
         onParamsChange={fetchData}
         totalCount={totalCount}
+        filters={DEFAULT_FILTERS}
+        datePresets={DEFAULT_DATE_PRESETS}
       ></TanstackTable>
       {selectedImage && (
   <div
