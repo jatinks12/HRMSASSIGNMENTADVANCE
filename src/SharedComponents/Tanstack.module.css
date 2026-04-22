@@ -95,3 +95,100 @@
   font-size: 13px;
   color: #555;
 }
+
+/* ── Filter bar ─────────────────────────────────────────────── */
+.filterBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.filterBtn {
+  padding: 6px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 20px;
+  background: #fff;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+}
+.filterBtn:hover { background: #f3f4f6; }
+
+.filterBtnActive {
+  background: #3b82f6;
+  color: #fff;
+  border-color: #3b82f6;
+}
+.filterBtnDate {
+  background: #8b5cf6;
+  color: #fff;
+  border-color: #8b5cf6;
+}
+
+.filterDivider {
+  width: 1px;
+  height: 24px;
+  background: #e5e7eb;
+  margin: 0 4px;
+}
+
+/* ── Date preset dropdown ───────────────────────────────────── */
+.presetWrapper {
+  position: relative;
+}
+
+.presetDropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 200;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.11);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 160px;
+}
+
+.presetItem {
+  padding: 8px 14px;
+  text-align: left;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.14s;
+}
+.presetItem:hover      { background: #f3f4f6; }
+.presetItemActive      { background: #ede9fe; color: #7c3aed; font-weight: 500; }
+
+.presetClear {
+  margin-top: 4px;
+  padding: 7px 14px;
+  text-align: left;
+  border: none;
+  border-top: 1px solid #f3f4f6;
+  border-radius: 6px;
+  background: transparent;
+  font-size: 12px;
+  color: #ef4444;
+  cursor: pointer;
+}
+.presetClear:hover { background: #fef2f2; }
+
+/* ── Active date badge ──────────────────────────────────────── */
+.dateBadge {
+  font-size: 11px;
+  padding: 3px 10px;
+  background: #ede9fe;
+  color: #6d28d9;
+  border-radius: 12px;
+  font-weight: 500;
+}
