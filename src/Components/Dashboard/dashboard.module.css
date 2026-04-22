@@ -1,146 +1,109 @@
-/* Main container */
-.dashboard {
-  padding: 20px;
-  background-color: #f4f6f9;
-  min-height: 100vh;
-  font-family: Arial, Helvetica, sans-serif;
+/* ============================================
+   STEP 1: Variables define karo — Light Mode
+   ============================================ */
+:root {
+  --bg-page:       #f9fafb;
+  --bg-card:       #ffffff;
+  --bg-charts:     #ffffff;
+  --text-primary:  #333333;
+  --border-color:  #e5e7eb;
+  --shadow:        0 1px 4px rgba(0, 0, 0, 0.06);
 }
 
-/* ================= CARDS ================= */
+/* ============================================
+   STEP 2: Variables override karo — Dark Mode
+   ============================================ */
+:root[data-theme="dark"] {
+  --bg-page:       #111827;
+  --bg-card:       #1f2937;
+  --bg-charts:     #1f2937;
+  --text-primary:  #f3f4f6;
+  --border-color:  #374151;
+  --shadow:        0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* ============================================
+   STEP 3: Classes mein var() use karo
+   Ab koi hardcoded color nahi — sab variables se
+   ============================================ */
+.dashboard {
+  padding: 24px;
+  min-height: 100vh;
+  background-color: var(--bg-page);       /* light: #f9fafb | dark: #111827 */
+}
 
 .cards {
   display: flex;
-  gap: 20px;
-  margin-bottom: 25px;
-  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
 }
 
 .cards div {
   flex: 1;
-  min-width: 200px;
-  background: white;
-  padding: 20px;
+  padding: 20px 24px;
   border-radius: 10px;
-  font-size: 18px;
-  font-weight: bold;
-  color: #333;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  transition: transform 0.2s ease;
+  background: var(--bg-card);             /* light: #ffffff | dark: #1f2937 */
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-primary);             /* light: #333    | dark: #f3f4f6 */
+  border: 1px solid var(--border-color);  /* light: #e5e7eb | dark: #374151 */
+  box-shadow: var(--shadow);
 }
-
-.cards div:hover {
-  transform: translateY(-5px);
-}
-
-/* ================= CHARTS ================= */
 
 .charts {
   display: flex;
-  gap: 20px;
-  margin-bottom: 30px;
-  background: white;
+  gap: 16px;
+  margin-bottom: 24px;
+  background: var(--bg-charts);           /* light: #ffffff | dark: #1f2937 */
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  flex-wrap: wrap;
+  border: 1px solid var(--border-color);  /* light: #e5e7eb | dark: #374151 */
+  box-shadow: var(--shadow);
+}
+/* Override PrimeReact DataTable in dark mode */
+:root[data-theme="dark"] .p-datatable .p-datatable-thead > tr > th {
+  background: #1f2937 !important;
+  color: #f3f4f6 !important;
+  border-color: #374151 !important;
 }
 
-.charts > div {
-  flex: 1;
-  min-width: 300px;
+:root[data-theme="dark"] .p-datatable .p-datatable-tbody > tr {
+  background: #1f2937 !important;
+  color: #f3f4f6 !important;
 }
 
-/* ================= TABLE (SCOPED) ================= */
-
-/* IMPORTANT: scoped with .dashboard */
-.dashboard :global(.p-datatable) {
-  background: white;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+:root[data-theme="dark"] .p-datatable .p-datatable-tbody > tr:hover {
+  background: #374151 !important;
 }
 
-.dashboard :global(.p-datatable-thead > tr > th) {
-  background-color: #4CAF50;
-  color: white;
-  text-align: center;
-  padding: 14px;
+:root[data-theme="dark"] .p-datatable .p-datatable-tbody > tr > td {
+  border-color: #374151 !important;
+  color: #f3f4f6 !important;
 }
 
-.dashboard :global(.p-datatable-tbody > tr > td) {
-  text-align: center;
-  padding: 12px;
-  border-bottom: 1px solid #eee;
+:root[data-theme="dark"] .p-paginator {
+  background: #1f2937 !important;
+  color: #f3f4f6 !important;
+  border-color: #374151 !important;
 }
 
-.dashboard :global(.p-datatable-tbody > tr:hover) {
-  background-color: #f1f1f1;
+:root[data-theme="dark"] .p-paginator .p-paginator-pages .p-paginator-page {
+  color: #f3f4f6 !important;
 }
 
-/* ================= INPUTS ================= */
-
-.dashboard :global(.p-inputtext) {
-  width: 100%;
-  margin-top: 5px;
-  padding: 6px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
+:root[data-theme="dark"] .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+  background: #3b82f6 !important;
+  color: #ffffff !important;
 }
 
-.dashboard select {
-  width: 100%;
-  margin-top: 5px;
-  padding: 6px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
+:root[data-theme="dark"] .p-inputtext {
+  background: #111827 !important;
+  color: #f3f4f6 !important;
+  border-color: #374151 !important;
 }
 
-/* ================= PAGINATION ================= */
-
-.dashboard :global(.p-paginator) {
-  padding: 10px;
-  background: #fafafa;
-  border-top: 1px solid #ddd;
-}
-
-.dashboard :global(.p-paginator .p-paginator-page) {
-  background: #4CAF50;
-  color: white;
-  border-radius: 5px;
-  margin: 0 3px;
-}
-
-.dashboard :global(.p-paginator .p-highlight) {
-  background: #2e7d32 !important;
-  color: white !important;
-}
-
-.dashboard :global(.p-paginator button:hover) {
-  background: #45a049 !important;
-}
-
-.dashboard :global(.p-paginator .p-paginator-prev),
-.dashboard :global(.p-paginator .p-paginator-next) {
-  background: #4CAF50;
-  color: white;
-  border-radius: 5px;
-}
-
-/* ================= SORT ================= */
-
-.dashboard th div {
-  cursor: pointer;
-  font-weight: bold;
-}
-
-/* ================= RESPONSIVE ================= */
-
-@media (max-width: 768px) {
-  .charts {
-    flex-direction: column;
-  }
-
-  .cards {
-    flex-direction: column;
-  }
+:root[data-theme="dark"] .p-dropdown {
+  background: #111827 !important;
+  color: #f3f4f6 !important;
+  border-color: #374151 !important;
 }
