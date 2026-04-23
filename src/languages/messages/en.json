@@ -70,5 +70,6 @@
 "preset.lastWeek":  "Last week",
 "preset.thisMonth": "This month",
 "preset.lastMonth": "Last month",
-"preset.thisYear":  "This year"
+"preset.thisYear":  "This year",
+"nav.applyLeave": "Apply Leave"
 }

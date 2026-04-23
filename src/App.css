@@ -1,54 +1,130 @@
+/* HEADER BASE */
 .header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 15px 30px;
-  background-color: #62666b;
-  color: white;
+  justify-content: space-between;
+  height: 64px;
+  padding-left: 20px;
+  background: #1f2937;
+  color: #fff;
+}
+
+/* LEFT SECTION */
+.left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }
 
 .logo {
-  font-size: 20px;
-  font-weight: bold;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
 }
 
-.nav a {
-  margin-left: 20px;
-  text-decoration: none;
-  color: white;
-  font-size: 16px;
+/* USER INFO */
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+  line-height: 1.2;
 }
 
-.nav a:hover {
-  text-decoration: underline;
-}
-
-.active-link {
-  color: yellow;
-  font-weight: bold;
-  border-bottom: 2px solid yellow;
-}
-.logout-btn {
-  background-color: #e53935;
-  color: #fff;
-  border: none;
-  padding: 10px 18px;
-  font-size: 14px;
+.userName {
   font-weight: 500;
-  border-radius: 6px;
+}
+
+.userEmail {
+  opacity: 0.7;
+  font-size: 11px;
+}
+
+/* NAV CONTAINER (pill style) */
+.navContainer {
+  display: flex;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 4px;
+  border-radius: 10px;
+  gap: 4px;
+}
+
+/* NAV LINKS */
+.navLink {
+  padding: 6px 14px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #e5e7eb;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.navLink:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.navLink.active {
+  background: #4f46e5;
+  color: #fff;
+  font-weight: 500;
+}
+
+/* RIGHT SIDE */
+.right {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+/* FULL HEIGHT LOGOUT */
+.logoutBtnFull {
+  height: 100%;
+  padding: 0 20px;
+  background: #dc2626;
+  border: none;
+  color: white;
+  font-size: 14px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.logout-btn:hover {
-  background-color: #c62828;
+.logoutBtnFull:hover {
+  background: #b91c1c;
 }
 
-.logout-btn:active {
-  transform: scale(0.97);
+/* LANGUAGE TOGGLE */
+.language-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: 12px;
+  font-size: 12px;
 }
 
-.logout-btn:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(229, 57, 53, 0.4);
+/* TOGGLE SAME AS YOURS (slightly refined) */
+.toggle-track {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  background: #e5e7eb;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.toggle-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+
+.toggle-track:has(input:checked) {
+  background: #4f46e5;
+}
+
+.toggle-track:has(input:checked) .toggle-thumb {
+  transform: translateX(20px);
 }

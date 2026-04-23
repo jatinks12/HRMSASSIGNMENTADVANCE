@@ -2,24 +2,32 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  
 }
 
 .searchInput {
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  outline: none;
+  padding: 10px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
   font-size: 14px;
-  width: 250px;
-  transition: border 0.2s ease;
+  width: 260px;
+  background: #ffffff;
+  transition: all 0.25s ease;
+  margin-bottom: 12px; /* 👈 spacing from table */
+}
+
+.searchInput::placeholder {
+  color: #9ca3af;
 }
 
 .searchInput:focus {
-  border-color: #4f46e5;
+  border-color: #6366f1;
+  box-shadow: 0 6px 18px rgba(99, 102, 241, 0.15);
+  transform: translateY(-1px);
 }
 
 .table {
+
   width: 100%;
   border-collapse: collapse;
   background: #fff;
@@ -59,41 +67,56 @@
   color: #333;
 }
 
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 .pagination {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-top: 10px;
+  gap: 14px;
+  margin-top: auto;
+  padding: 5px 7px;
+  background: #fafafa;
+  border: 1px solid #eee;
+  border-radius: 8px;
 }
 
 .pagination button {
-  padding: 6px 12px;
-  border: none;
+  padding: 7px 14px;
   background: #4f46e5;
   color: #fff;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 13px;
-  transition: background 0.2s ease;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.2s ease;
 }
 
 .pagination button:hover:not(:disabled) {
   background: #4338ca;
+  color: #ffffff; /* force strong contrast */
 }
 
 .pagination button:disabled {
-  background: #ccc;
-  cursor: not-allowed;
+  background: #e5e7eb;
+  color: #9ca3af; /* readable disabled state */
 }
 
 .pagination span {
   font-size: 14px;
+  color: #374151;
 }
 
 .pagination div {
   margin-left: auto;
   font-size: 13px;
-  color: #555;
+  color: #1f2937;
+  background: #eef2ff;
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-weight: 600; /* increased */
+  letter-spacing: 0.2px;
 }
 
 /* ── Filter bar ─────────────────────────────────────────────── */
@@ -114,13 +137,18 @@
   cursor: pointer;
   transition: all 0.18s ease;
   white-space: nowrap;
+  color: #374151; /* base text color */
 }
-.filterBtn:hover { background: #f3f4f6; }
 
+.filterBtn:hover {
+  background: #f3f4f6;
+  color: #111827; /* darker on hover */
+}
 .filterBtnActive {
   background: #3b82f6;
   color: #fff;
   border-color: #3b82f6;
+  font-weight: 600;
 }
 .filterBtnDate {
   background: #8b5cf6;
@@ -191,4 +219,52 @@
   color: #6d28d9;
   border-radius: 12px;
   font-weight: 500;
+}
+button {
+  -webkit-font-smoothing: antialiased;
+}
+.emptyState {
+  padding: 40px 20px;
+  text-align: center;
+  border: 1px dashed #e5e7eb;
+  border-radius: 10px;
+  background: #fafafa;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.tableWrapper {
+  min-height: 560px; /* adjust based on your design */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+/* Top row: filters + search */
+.topBar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* No space-between anymore */
+.filterBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.searchInput {
+  padding: 7px 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 13px;
+  min-width: 200px;
+}
+
+.searchInput:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
+  outline: none;
 }

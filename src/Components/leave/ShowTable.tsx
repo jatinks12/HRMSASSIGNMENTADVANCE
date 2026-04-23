@@ -11,6 +11,7 @@ import TanstackTable, {
   type TableParams,
 } from "../../SharedComponents/TanstackTable";
 import { FormattedMessage, useIntl } from "react-intl";
+import { useNavigate } from "react-router-dom";
 
 type Person = {
   Name: string;
@@ -27,6 +28,7 @@ type Person = {
 
 const ShowTable = () => {
   const intl=useIntl();
+  const Navigate = useNavigate();
   const { user, permissions } = useAuth();
   const [rows, setRows] = useState<Person[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -168,7 +170,11 @@ const ShowTable = () => {
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.title}><FormattedMessage id="leave.myRequests"/></h2>
+     
+      <div className={styles.header}>
+        <button className={styles.backBtn} onClick ={()=>Navigate("/leave")}>←</button>
+       <h2 className={styles.title}><FormattedMessage id="leave.myRequests"/></h2>
+      </div>
       {/* {loading ? (
         <TableSkeleton rows={5} cols={8}></TableSkeleton>
       ) : (

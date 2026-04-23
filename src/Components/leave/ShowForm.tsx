@@ -11,6 +11,7 @@ import { FormattedMessage, useIntl } from "react-intl";
 
 const ShowForm = () => {
   const intl = useIntl();
+  const Navigate = useNavigate();
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -142,6 +143,10 @@ const ShowForm = () => {
 
   return (
     <>
+      <div className={styles.headers}>
+        <button className={styles.backBtn} onClick ={()=>Navigate("/leave")}>←</button>
+      <h2 className={styles.title}><FormattedMessage id="nav.applyLeave"/></h2>
+      </div>
       <form onSubmit={formik.handleSubmit} className={styles.form}>
         <div className={styles.header}>
           <span><FormattedMessage id="leave.application"/></span>

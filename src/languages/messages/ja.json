@@ -70,5 +70,6 @@
   "preset.lastWeek": "先週",
   "preset.thisMonth": "今月",
   "preset.lastMonth": "先月",
-  "preset.thisYear": "今年"
+  "preset.thisYear": "今年",
+  "nav.applyLeave": "休暇申請"
 }
