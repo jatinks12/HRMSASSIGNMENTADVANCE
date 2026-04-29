@@ -11,6 +11,7 @@ import TanstackTable, {
   type TableParams,
 } from "../../SharedComponents/TanstackTable";
 import { FormattedMessage, useIntl } from "react-intl";
+import { useNavigate } from "react-router-dom";
 
 type Person = {
   Name: string;
@@ -27,6 +28,7 @@ type Person = {
 
 const ShowTable = () => {
   const intl=useIntl();
+  const Navigate = useNavigate();
   const { user, permissions } = useAuth();
   const [rows, setRows] = useState<Person[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -106,13 +108,7 @@ const ShowTable = () => {
           <img
             src={row.original.avatar_url}
             onClick={() => setSelectedImage(row.original.avatar_url)}
-            style={{
-              width: "30px",
-              height: "30px",
-              borderRadius: "50%",
-              objectFit: "cover",
-              cursor: "pointer",
-            }}
+           className={styles.imageavatar}
           ></img>
         ),
       },
@@ -165,10 +161,30 @@ const ShowTable = () => {
   //   columns,
   //   getCoreRowModel: getCoreRowModel(),
   // });
+    const handleDownload = async () =>{
+    if(!selectedImage) return;
+
+    const res = await fetch(selectedImage);
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `leave${Date.now()}.jpg`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    window.URL.revokeObjectURL(url);
+  }
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.title}><FormattedMessage id="leave.myRequests"/></h2>
+     
+      <div className={styles.header}>
+        <button className={styles.backBtn} onClick ={()=>Navigate("/leave")}>←</button>
+       <h2 className={styles.title}><FormattedMessage id="leave.myRequests"/></h2>
+      </div>
       {/* {loading ? (
         <TableSkeleton rows={5} cols={8}></TableSkeleton>
       ) : (
@@ -212,25 +228,31 @@ const ShowTable = () => {
         filters={DEFAULT_FILTERS}
         datePresets={DEFAULT_DATE_PRESETS}
       ></TanstackTable>
-      {selectedImage && (
-  <div
-    className={styles.modalOverlay}
-    onClick={() => setSelectedImage(null)}
-  >
-    <div
-      className={styles.modalContent}
-      onClick={(e) => e.stopPropagation()}
-    >
-      <button
-        className={styles.closeBtn}
-        onClick={() => setSelectedImage(null)}
-      >
-        ✕
-      </button>
-      <img src={selectedImage} className={styles.modalImage} />
-    </div>
-  </div>
-)}
+     {selectedImage && (
+        <div
+          className={styles.modalOverlay}
+          onClick={() => setSelectedImage(null)}
+        >
+          <div
+            className={styles.modalContent}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className={styles.closeBtn}
+              onClick={() => setSelectedImage(null)}
+            >
+              ✕
+            </button>
+            <a
+              onClick={handleDownload}
+              className={styles.downloadBtn}
+            >
+              ⬇ Download
+            </a>
+            <img src={selectedImage} className={styles.modalImage} />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
