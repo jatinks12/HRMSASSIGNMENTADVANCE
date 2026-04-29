@@ -13,9 +13,44 @@
 }
 
 /* Headings */
+.btnAndheading {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 60px;
+  padding: 0 20px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #ffffff;
+}
+
+/* LEFT BUTTON */
+.addBtn {
+  position: absolute;
+  left: 20px;
+
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.addBtn:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+}
+
+/* CENTER TITLE (TRUE CENTER) */
 .title {
+  margin: 0 auto;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1f2937;
   text-align: center;
-  color: #333;
 }
 
 .subtitle {
@@ -93,14 +128,15 @@
 
 /* Table wrapper fix */
 .tableWrapper {
-  margin-top: 30px;
+  margin-top: 5px;
   width: 100%;
-  overflow-x: auto;   /* 🔥 KEY FIX */
+  /* overflow-x: auto;   KEY FIX */
 }
 
 /* Fix PrimeReact table overflow */
 :global(.p-datatable) {
   min-width: 900px;   /* ensures proper column spacing */
+ 
 }
 
 /* Make paginator visible */
@@ -113,9 +149,248 @@
 /* Fix table header */
 :global(.p-datatable-thead > tr > th) {
   white-space: nowrap;
+
 }
 
 /* Fix table cells */
 :global(.p-datatable-tbody > tr > td) {
   white-space: nowrap;
+  
+}
+
+.custom-loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #ddd;
+  border-top: 5px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.addBtn {
+  background: linear-gradient(135deg, #4CAF50, #22c55e);
+  color: white;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 15px;
+  transition: all 0.3s ease;
+}
+
+.addBtn:hover {
+  background: linear-gradient(135deg, #45a049, #16a34a);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.tableContainer {
+  height: 530px;              /* TOTAL FIXED HEIGHT */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Table wrapper */
+.tableContent {
+  flex: 1;
+}
+
+/* Force table body height */
+.p-datatable-wrapper {
+  min-height: 350px;  
+  max-height: 350px;        /* 
+   reserve space */
+}
+
+/* Keep paginator fixed */
+.p-paginator {
+  flex-shrink: 0;
+}.p-datatable td {
+  padding: 8px 10px !important;   /*  reduce height */
+}
+
+.p-datatable th {
+  padding: 8px 10px !important;
+}
+
+.p-datatable .p-datatable-tbody > tr {
+  height: 40px;                  /* fixed row height */
+}
+.tableFooter {
+  position: relative;
+  padding: 10px 15px;
+}
+
+/* Center paginator */
+.p-paginator {
+  justify-content: center;
+}
+
+/* Push total to right */
+.totalCount {
+  position: absolute;
+  right: 15px;
+  top: 92%;
+  transform: translateY(-50%);
+  font-weight: 600;
+}
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ddd;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/*  Hover Effect */
+.avatar:hover {
+  transform: scale(1.2);
+  border-color: #3b82f6;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+/* Wrapper */
+.disabledFieldWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Disabled input styling */
+.disabledInput {
+  background-color: #f3f4f6 !important;
+  color: #6b7280 !important;
+  cursor: not-allowed;
+}
+
+.disabledInput {
+  background-color: #f3f4f6 !important;
+  color: #6b7280 !important;
+  cursor: not-allowed;
+}
+
+.disabledText {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #6b7280;
+}
+.dialogHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+/* Download icon */
+.downloadIcon {
+  font-size: 18px;
+  color: #374151;
+  cursor: pointer;
+  transition: 0.5s ease;
+
+}
+
+.downloadIcon:hover {
+  color: #3b82f6;
+  transform: scale(1.2);
+}
+
+
+/* First (<<) */
+.p-paginator-first::before {
+  content: "<<";
+}
+
+/* Prev (<) */
+.p-paginator-prev::before {
+  content: "<";
+}
+
+/* Next (>) */
+.p-paginator-next::before {
+  content: ">";
+}
+
+/* Last (>>) */
+.p-paginator-last::before {
+  content: ">>";
+}
+
+/* Hide default icons */
+.p-paginator-first .pi,
+.p-paginator-prev .pi,
+.p-paginator-next .pi,
+.p-paginator-last .pi {
+  display: none;
+} 
+.skeletonWrapper {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Each row like table row */
+.skeletonRow {
+  display: grid;
+  grid-template-columns: 60px 1fr 1fr 1fr 1fr 1fr; 
+  /* Avatar + 5 columns */
+  gap: 12px;
+  align-items: center;
+}
+
+/* Each cell */
+.skeletonCell {
+  height: 50px;
+  border-radius: 6px;
+  background: linear-gradient(
+    90deg,
+    #f0f0f0 25%,
+    #e0e0e0 50%,
+    #f0f0f0 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+}
+
+/* Avatar (first column) */
+.skeletonAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(
+    90deg,
+    #f0f0f0 25%,
+    #e0e0e0 50%,
+    #f0f0f0 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+}
+
+/* Animation */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
