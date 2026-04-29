@@ -6,21 +6,12 @@ import { Button } from "primereact/button";
 import "primereact/resources/themes/lara-light-blue/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
-
-type Employees = {
-  id: string;
-  Name: string;
-  Email: string;
-  role: string;
-  department: string;
-  phone: string;
-};
-
+import { type Employee } from "./Management";
 type Props = {
-  employees: Employees[];
+  employees: Employee[];
   deleteEmployee: (id: string) => void;
-  editEmployee: (emp: Employees) => void;
-  viewEmployee: (emp: Employees) => void;
+  editEmployee: (emp: Employee) => void;
+  viewEmployee: (emp: Employee) => void;
   totalRecords: number;
   onPageChange: (page: number, limit: number) => void;
   limit: number;
@@ -64,13 +55,28 @@ const EmployeeTable: React.FC<Props> = ({
     onPageChange(newPage, newLimit);
   };
 
-  const actionBody = (rowData: Employees) => (
+  const actionBody = (rowData: Employee) => (
     <div style={{ display: "flex", gap: "10px" }}>
       <Button label="View" icon="pi pi-eye" className="p-button-info" onClick={() => viewEmployee(rowData)} />
       <Button label="Edit" icon="pi pi-pencil" className="p-button-warning" onClick={() => editEmployee(rowData)} />
-      <Button label="Delete" icon="pi pi-trash" className="p-button-danger" onClick={() => deleteEmployee(rowData.id)} />
+      <Button label="Delete" icon="pi pi-trash" className="p-button-danger" onClick={() => deleteEmployee(rowData?.id)} />
     </div>
   );
+  const avatarBody = (rowData: Employee) => {
+  return (
+    <img
+      src={rowData.avatar_url}
+      alt={rowData.Name}
+      style={{
+  width: "40px",
+  height: "40px",
+  borderRadius: "50%",
+  objectFit: "cover",
+  border: "2px solid #ddd"
+}}
+    />
+  );
+};
 
   return (
     <div style={{ marginTop: "30px" }}>
@@ -94,6 +100,10 @@ const EmployeeTable: React.FC<Props> = ({
           onFilterChange(e.filters);
         }}
       >
+         <Column
+          header="Avatar"
+        body={avatarBody}
+        />
         <Column
           field="Name"
           header={<span style={{ cursor: "pointer" }} onClick={() => handleManualSort("full_name")}>Name</span>}

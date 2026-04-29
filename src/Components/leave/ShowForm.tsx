@@ -1,38 +1,38 @@
 import { useFormik } from "formik";
 
-import { observer } from "mobx-react-lite";
 import styles from "./ShowForm.module.css";
 import * as Yup from "yup";
 import { SupabaseClient } from "../../Helper/Supabase";
 import toast from "react-hot-toast";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useAuth } from "../../Context/AuthContext";
-
+import { FormattedMessage, useIntl } from "react-intl";
 
 const ShowForm = () => {
-  const{user}=useAuth();
+  const intl = useIntl();
+  const Navigate = useNavigate();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
-  const calculateWorkingDays  = (start : string , end:string) =>{
-    if(!start||!end)return"";
+  const calculateWorkingDays = (start: string, end: string) => {
+    if (!start || !end) return "";
 
-    let count =0;
+    let count = 0;
     let current = new Date(start);
-    const last  = new Date(end);
+    const last = new Date(end);
 
-    while(current <= last){
+    while (current <= last) {
       const day = current.getDay();
 
-      if(day !== 0 && day!== 6){
+      if (day !== 0 && day !== 6) {
         count++;
       }
-      current.setDate(current.getDate()+1);
+      current.setDate(current.getDate() + 1);
     }
     return count.toString();
-  }
+  };
 
- 
   const formik = useFormik({
     initialValues: {
       startDate: "",
@@ -42,12 +42,14 @@ const ShowForm = () => {
       leave_type: "",
     },
     validationSchema: Yup.object({
-      startDate: Yup.date().required("Start Date is required").min(new Date(),"Start date must be in the future"),
+      startDate: Yup.date()
+        .required(intl.formatMessage({id:"validation.startRequired"}))
+        .min(new Date(), intl.formatMessage({id:"validation.startFuture"})),
       endDate: Yup.date()
-        .required("End Date is required")
+        .required(intl.formatMessage({id:"validation.endRequired"}))
         .test(
           "is-after-start",
-          "End date must be after start date",
+           intl.formatMessage({id:"validation.endAfterStart"}),
           function (value) {
             const { startDate } = this.parent;
             return value && startDate
@@ -55,68 +57,106 @@ const ShowForm = () => {
               : true;
           },
         ),
-      total_day: Yup.string().required("Total days is required"),
-      leave_type: Yup.string().required("Leave type is required"),
-      reason: Yup.string().required("Reason is required"),
+      total_day: Yup.string().required(intl.formatMessage({id:"validation.totalDaysRequired"})),
+      leave_type: Yup.string().required(intl.formatMessage({id:"validation.typeRequired"})),
+      reason: Yup.string().required(intl.formatMessage({id:"validation.reasonRequired"})),
     }),
-    onSubmit: async (values) => {
-      // console.log(values);
+   onSubmit: async (values) => {
+  try {
+    const startDate = new Date(values.startDate)
+      .toISOString()
+      .split("T")[0];
+    const endDate = new Date(values.endDate)
+      .toISOString()
+      .split("T")[0];
 
-      const { data, error } = await SupabaseClient.from("leave_types")
-        .select("*")
-        .eq("name", values.leave_type)
-        .maybeSingle();
-      if (data) {
-        // console.log("data" ,data , values.leave_type );
-      } else {
-        console.log("error", error);
-      }
-      const { error: err } = await SupabaseClient.from("leave_requests").insert(
-        [
-          {
-            user_id: user?.id,
-            Name: user?.name,
-            Email: user?.email,
-            leave_type_id: data.id,
-            department_id: user?.deptId,
-            start_date: values.startDate,
-            end_date: values.endDate,
-            total_days: values.total_day,
-            reason: values.reason,
-            status: "Pending",
-          },
-        ],
-      );
-      if (err) {
-        console.log("err", err);
-      } else {
-        toast.success("leave applied");
-        navigate("/leavetable");
-      }
-      formik.resetForm();
-    },
-  });
+  
+    const { data: overlapping, error: overlapError } =
+      await SupabaseClient.from("leave_requests")
+        .select("start_date, end_date, status")
+        .eq("user_id", user?.id)
+        .in("status", ["pending", "approved"])
+        .lte("start_date", endDate)
+        .gte("end_date", startDate);
 
-    useEffect (()=>{
-    const {startDate , endDate}  = formik.values;
-    if(startDate && endDate){
-      const days = calculateWorkingDays(startDate , endDate);
-      formik.setFieldValue("total_day",days);
+    if (overlapError) {
+      toast.error("Could not validate dates");
+      return;
     }
-   },[formik.values.startDate , formik.values.endDate]);
+
+    if (overlapping && overlapping.length > 0) {
+      const conflict = overlapping[0];
+      toast.error(
+        `You already have a leave from ${conflict.start_date} to ${conflict.end_date} (${conflict.status})`
+      );
+      return;
+    }
+
+   
+    const { data: leaveType } =
+      await SupabaseClient.from("leave_types")
+        .select("id")
+        .eq("Leave_Type_Name", values.leave_type)
+        .maybeSingle();
+
+    if (!leaveType?.id) {
+      toast.error("Invalid leave type");
+      return;
+    }
+
+    const { error: err } = await SupabaseClient.from("leave_requests").insert([
+      {
+        user_id: user?.id,
+        Name: user?.name,
+        Email: user?.email,
+        leave_type_id: leaveType.id,
+        department_id: user?.deptId,
+        start_date: startDate,
+        end_date: endDate,
+        total_days: values.total_day,
+        reason: values.reason,
+        status: "pending", 
+      },
+    ]);
+
+    if (err) {
+      toast.error(err.message);
+      return;
+    }
+
+    toast.success("Leave applied successfully");
+    navigate("/leavetable");
+    formik.resetForm();
+  } catch (err) {
+    console.log(err);
+    toast.error("Something went wrong");
+  }
+  },});
+
+  useEffect(() => {
+    const { startDate, endDate } = formik.values;
+    if (startDate && endDate) {
+      const days = calculateWorkingDays(startDate, endDate);
+      formik.setFieldValue("total_day", days);
+    }
+  }, [formik.values.startDate, formik.values.endDate]);
 
   return (
     <>
+      <div className={styles.headers}>
+        <button className={styles.backBtn} onClick ={()=>Navigate("/leave")}>←</button>
+      <h2 className={styles.title}><FormattedMessage id="nav.applyLeave"/></h2>
+      </div>
       <form onSubmit={formik.handleSubmit} className={styles.form}>
         <div className={styles.header}>
-          <span>Leave Application</span>
+          <span><FormattedMessage id="leave.application"/></span>
         </div>
 
         <div className={styles.formGrid}>
           <div className={styles.inputGroup}>
-            <label>Start Date</label>
+            <label><FormattedMessage id="leave.startDate"/></label>
             <input
-              type="datetime-local"
+              type="date"
               name="startDate"
               value={formik.values.startDate}
               onChange={formik.handleChange}
@@ -128,9 +168,9 @@ const ShowForm = () => {
           </div>
 
           <div className={styles.inputGroup}>
-            <label>End Date</label>
+            <label><FormattedMessage id="leave.endDate"/></label>
             <input
-              type="datetime-local"
+              type="date"
               name="endDate"
               value={formik.values.endDate}
               onChange={formik.handleChange}
@@ -142,12 +182,13 @@ const ShowForm = () => {
           </div>
 
           <div className={styles.inputGroup}>
-            <label>Total Days</label>
+            <label><FormattedMessage id="leave.totalDays"/></label>
             <input
               type="text"
               name="total_day"
               value={formik.values.total_day}
               readOnly
+              disabled
             />
             {formik.touched.total_day && formik.errors.total_day && (
               <span className={styles.error}>{formik.errors.total_day}</span>
@@ -155,19 +196,19 @@ const ShowForm = () => {
           </div>
 
           <div className={styles.inputGroup}>
-            <label>Leave Type</label>
+            <label><FormattedMessage id="leave.type"/></label>
             <select
               name="leave_type"
               value={formik.values.leave_type}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
             >
-              <option value="">Select leave type</option>
-              <option value="Maternity Leave">Maternity Leave</option>
-              <option value="Earned Leave">Earned Leave</option>
-              <option value="Casual Leave">Casual Leave</option>
-              <option value="Sick Leave">Sick Leave</option>
-              <option value="Unpaid Leave">Unpaid Leave</option>
+              <option value=""><FormattedMessage id="leave.selectType"/></option>
+              <option value="Maternity Leave"><FormattedMessage id="leave.type.maternity"/></option>
+              <option value="Earned Leave"><FormattedMessage id="leave.type.earned"/></option>
+              <option value="Casual Leave"><FormattedMessage id="leave.type.casual"/></option>
+              <option value="Sick Leave"><FormattedMessage id="leave.type.sick"/></option>
+              <option value="Unpaid Leave"><FormattedMessage id="leave.type.unpaid"/></option>
             </select>
 
             {formik.touched.leave_type && formik.errors.leave_type && (
@@ -176,10 +217,10 @@ const ShowForm = () => {
           </div>
 
           <div className={styles.inputGroupFull}>
-            <label>Reason</label>
+            <label><FormattedMessage id="leave.reason"/></label>
             <textarea
               name="reason"
-              placeholder="Enter your reason..."
+              placeholder={intl.formatMessage({id:"leave.reason.placeholder"})}
               value={formik.values.reason}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
@@ -191,11 +232,11 @@ const ShowForm = () => {
         </div>
 
         <button type="submit" className={styles.submitBtn}>
-          Apply Leave
+          <FormattedMessage id="leave.apply"/>
         </button>
       </form>
     </>
   );
 };
 
-export default observer(ShowForm);
+export default ShowForm;

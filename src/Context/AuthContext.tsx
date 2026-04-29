@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { SupabaseClient } from "../Helper/Supabase";
+import {  profileconst } from "../SharedComponents/Constants/const";
 
 
 
@@ -46,14 +47,14 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  console.log("AuthProvider rendered");
+  // console.log("AuthProvider rendered");
   
   const [user, setUser] = useState<User | null>(null);
   const [permissions, setPermissions] = useState<Permissions>(defaultPermission);
   const [isAuth, setIsAuth] = useState(false);
   const [loading, setLoading] = useState(true);
   
-  // this ref prevents double fetch
+  
 const isFetching = useRef(false);
 
  async function fetchProfileAndRole(userId: string) {
@@ -64,19 +65,19 @@ const isFetching = useRef(false);
     
     try {
       const { data: profile, error } = await SupabaseClient
-        .from("profiles")
+        .from(profileconst)
         .select(`*, roles(can_view_dashboard, can_view_management, can_view_leave_table, can_apply_leave, can_approve_leave,emprole), departments!profiles_department_id_fkey(empDepartment)`)
         .eq("id", userId)
         .single();
 
-      console.log("profile result:", profile, "error:", error);
+      // console.log("profile result:", profile, "error:", error);
 
       if (error || !profile || !profile.roles) {
         setLoading(false);
         return;
       }
 
-      console.log("setting user and permissions...");
+      // console.log("setting user and permissions...");
 
       const role = profile.roles;
       const dept = profile.departments;
@@ -100,7 +101,7 @@ const isFetching = useRef(false);
 
       setIsAuth(true);
     } catch (err) {
-      console.error("fetchProfileAndRole error:", err);
+      // console.error("fetchProfileAndRole error:", err);
     } finally {
       setLoading(false);
       setTimeout(() => {
@@ -117,17 +118,16 @@ const isFetching = useRef(false);
     setIsAuth(false);
   }
 useEffect(() => {
-    console.log("useEffect fired");
+    // console.log("useEffect fired");
 
     const { data: listener } = SupabaseClient.auth.onAuthStateChange(
       (event, session) => {
-        console.log("event:", event);
+        // console.log("event:", event);
 
-        // DO NOT await anything here
-        // just store userId and trigger fetch outside
+      
         if (event === "SIGNED_IN" || event === "INITIAL_SESSION") {
           if (session?.user) {
-            // release the lock first, then fetch
+           
             Promise.resolve().then(() => {
               fetchProfileAndRole(session.user.id);
             });
