@@ -12,6 +12,7 @@ import ApproveLeave from "./Components/leave/ApproveLeave";
 import ShowTable from "./Components/leave/ShowTable";
 import Dashboard from "./Components/Dashboard/Dashboard";
 import Management from "./Components/Mangement/Management";
+import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 
 
 
@@ -33,7 +34,7 @@ const App = () => {
             <Link to="/leave">Leave</Link>
             {permissions.management && <Link to="/management">Management</Link>}
           </nav>
-          <button style={{ backgroundColor: "red" }} onClick={logout}>
+          <button style={{ backgroundColor: "red" ,cursor:'pointer'}} onClick={logout}>
             Logout
           </button>
         </header>
