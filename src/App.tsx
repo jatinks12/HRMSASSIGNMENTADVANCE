@@ -18,6 +18,7 @@ import ApproveLeave from "./Components/leave/ApproveLeave";
 import ShowTable from "./Components/leave/ShowTable";
 import Dashboard from "./Components/Dashboard/Dashboard";
 import Management from "./Components/Mangement/Management";
+import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import PageLoader from "./Components/UI/PageLoader";
 import { useState } from "react";
 import { FormattedMessage, IntlProvider } from "react-intl";
