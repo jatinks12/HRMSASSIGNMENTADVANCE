@@ -32,7 +32,6 @@ const SignUp = () => {
       photo: null,
     },
 
-   
     validationSchema: Yup.object({
       name: Yup.string()
         .min(3, "Name must be at least 3 characters")
@@ -50,8 +49,7 @@ const SignUp = () => {
       department: Yup.string().required("Department is required"),
     }),
 
-    
-    onSubmit: async (values, { resetForm }) => {
+    onSubmit: async (values) => {
       setLoading(true);
       try {
         setLoading(true);
@@ -155,19 +153,6 @@ const SignUp = () => {
     },
   });
 
-  // ✅ Fix 7: onChange handler for picture
-  const handlePictureChange = (e:any) => {
-    const file = e.target.files[0];
-    if (file) {
-      formik.setFieldValue("picture", file);
-      if (preview) {
-        URL.revokeObjectURL(preview);  // purani URL memory se hatao
-      }
-      setPreview(URL.createObjectURL(file));
-    }
-  };
-
-  
   return (
     <div className={styles.container}>
       {loading ? (
@@ -190,12 +175,16 @@ const SignUp = () => {
             accept="image/*"
             onChange={(e) => {
               const file = e.currentTarget.files?.[0];
-
               if (file) {
+                if (file.size > 2 * 1024 * 1024) {
+                toast.error("Max 2MB allowed");
+                return;
+              }
                 formik.setFieldValue("photo", file);
                 if (preview) {
                   URL.revokeObjectURL(preview);
                 }
+
                 const objectUrl = URL.createObjectURL(file);
                 setPreview(objectUrl);
               }

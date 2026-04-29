@@ -82,3 +82,67 @@
   cursor: pointer;
   font-weight: bold;
 }
+.header {
+  display: flex;
+  align-items: center;
+  gap:10px;
+  
+}
+
+/* Title */
+.title {
+  font-size: 19px;
+  font-weight: 600;
+  color: #111827;
+  letter-spacing: 0.3px;
+}
+
+/* Back button */
+.backBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: #f3f4f6;
+  color: #111827;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.backBtn:hover {
+  background: #e5e7eb;
+  transform: translateX(-2px);
+}
+
+.backBtn:active {
+  transform: scale(0.95);
+}
+.downloadBtn {
+  position: absolute;
+  top: -12px;
+  left: -12px;
+  background: #111827;
+  color: #fff;
+  padding: 6px 10px;
+  font-size: 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.downloadBtn:hover {
+  background: #000;
+}
+
+.imageavatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer !important;
+}
