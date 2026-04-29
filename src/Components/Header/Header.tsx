@@ -1,4 +1,4 @@
-import { NavLink, useLocation } from "react-router-dom";
+
 import { useAuth } from "../../Context/AuthContext";
 import { FormattedMessage } from "react-intl";
 import type { Dispatch, SetStateAction } from "react";
@@ -11,18 +11,10 @@ interface Props {
 }
 
 const Header = ({ locale, setLocale }: Props) => {
-  const { user, permissions, logout } = useAuth();
-  const location = useLocation();
+  const { user,  logout } = useAuth();
+  
 
-  const isLeaveActive = () => {
-    const path = location.pathname.toLowerCase();
-    return (
-      path.startsWith("/leave") ||
-      path === "/applyleave" ||
-      path === "/approveleave" ||
-      path === "/leavetable"
-    );
-  };
+ 
 
   return (
     <header className={styles.header}>
@@ -36,44 +28,7 @@ const Header = ({ locale, setLocale }: Props) => {
       </div>
 
   
-      <nav className={styles.navContainer}>
-        {permissions.dashboard && (
-          <NavLink
-            to="/dashboard"
-            className={({ isActive }) =>
-              isActive
-                ? `${styles.navLink} ${styles.active}`
-                : styles.navLink
-            }
-          >
-            <FormattedMessage id="nav.dashboard" />
-          </NavLink>
-        )}
-
-        <NavLink
-          to="/leave"
-          className={() =>
-            isLeaveActive()
-              ? `${styles.navLink} ${styles.active}`
-              : styles.navLink
-          }
-        >
-          <FormattedMessage id="nav.leave" />
-        </NavLink>
-
-        {permissions.management && (
-          <NavLink
-            to="/management"
-            className={({ isActive }) =>
-              isActive
-                ? `${styles.navLink} ${styles.active}`
-                : styles.navLink
-            }
-          >
-            <FormattedMessage id="nav.management" />
-          </NavLink>
-        )}
-      </nav>
+      
 
      
       <div className={styles.right}>

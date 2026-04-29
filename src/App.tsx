@@ -13,6 +13,7 @@ import en from "./languages/messages/en.json";
 import ja from "./languages/messages/ja.json";
 import HrmsRoutes from "./Components/Router/HrmsRoutes";
 import Header from "./Components/Header/Header";
+import Sidebar from "./Components/Header/Sidebar";
 
 const messages = {
   en,
@@ -32,13 +33,21 @@ const App = () => {
   );
   return (
     <IntlProvider locale={locale} messages={messages[locale]}>
-      {!shouldHideHeader && isAuth && (
+      {!shouldHideHeader && isAuth ? (
+        <div className="appLayout">
        <Header locale={locale} setLocale={setLocale}/>
-      )}
-      <Toaster position="top-right" reverseOrder={false} />
+        <div className="mainLayout">
+          <Sidebar/>
 
-      <HrmsRoutes/>
-      
+          <div className="content">
+            <HrmsRoutes/>
+          </div>
+        </div>
+       </div>
+      ):
+      ( <HrmsRoutes/>)}
+
+      <Toaster position="top-right" reverseOrder={false} />
     </IntlProvider>
   );
 };
