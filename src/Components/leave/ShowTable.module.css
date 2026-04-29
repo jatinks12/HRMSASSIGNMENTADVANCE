@@ -121,3 +121,28 @@
 .backBtn:active {
   transform: scale(0.95);
 }
+.downloadBtn {
+  position: absolute;
+  top: -12px;
+  left: -12px;
+  background: #111827;
+  color: #fff;
+  padding: 6px 10px;
+  font-size: 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.downloadBtn:hover {
+  background: #000;
+}
+
+.imageavatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer !important;
+}

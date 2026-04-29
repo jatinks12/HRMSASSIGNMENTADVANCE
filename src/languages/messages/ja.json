@@ -3,7 +3,7 @@
   "nav.dashboard": "ダッシュボード",
   "nav.leave": "休暇",
   "nav.management": "管理",
-  "btn.logout": "ログアウト",
+  "btn.logout": "退出",
   "heading.name": "休暇管理",
   "leave.apply": "休暇申請",
   "leave.approve": "休暇承認",
@@ -71,5 +71,7 @@
   "preset.thisMonth": "今月",
   "preset.lastMonth": "先月",
   "preset.thisYear": "今年",
-  "nav.applyLeave": "休暇申請"
+  "nav.applyLeave": "休暇申請",
+  "table.noData" : "データなし",
+"table.errMessage":"条件を変更してください"
 }

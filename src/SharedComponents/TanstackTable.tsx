@@ -217,153 +217,161 @@ const TanstackTable = <T extends object>({
   const hasPresets = !!datePresets;
   return (
     <div className={styles.container}>
-    <div className={styles.topBar}>
-       
-  <input
-    type="text"
-    placeholder={intl.formatMessage({ id: "table.searchPlaceholder" })}
-    value={search}
-    onChange={handleSearch}
-    className={styles.searchInput}
-  />
-  {(hasFilters || hasPresets) && (
-    <div className={styles.filterBar}>
-      {hasFilters &&
-        filters!.map(({ key, labelId }) => (
-          <button
-            key={key}
-            className={`${styles.filterBtn} ${
-              filterMode === key ? styles.filterBtnActive : ""
-            }`}
-            onClick={() => handleFilter(key)}
-          >
-            <FormattedMessage id={labelId} />
-          </button>
-        ))}
-
-      {hasFilters && hasPresets && (
-        <span className={styles.filterdivider} />
-      )}
-
-      {hasPresets && (
-        <div className={styles.presetWrapper} ref={presetRef}>
-          <button
-            className={`${styles.filterBtn} ${
-              activePreset ? styles.filterBtnDate : ""
-            }`}
-            onClick={() => setShowPresets((v) => !v)}
-          >
-            {activePreset
-              ? intl.formatMessage({ id: activePreset })
-              : intl.formatMessage({ id: "filter.setTime" })}{" "}
-            {showPreset ? "▲" : "▼"}
-          </button>
-
-          {showPreset && (
-            <div className={styles.presetDropdown}>
-              {datePresets!.map((preset) => (
+      <div className={styles.topBar}>
+        <input
+          type="text"
+          placeholder={intl.formatMessage({ id: "table.searchPlaceholder" })}
+          value={search}
+          onChange={handleSearch}
+          className={styles.searchInput}
+        />
+        {(hasFilters || hasPresets) && (
+          <div className={styles.filterBar}>
+            {hasFilters &&
+              filters!.map(({ key, labelId }) => (
                 <button
-                  key={preset.labelId}
-                  className={`${styles.presetItem} ${
-                    activePreset === preset.labelId
-                      ? styles.presetItemActive
-                      : ""
+                  key={key}
+                  className={`${styles.filterBtn} ${
+                    filterMode === key ? styles.filterBtnActive : ""
                   }`}
-                  onClick={() => handlePreset(preset)}
+                  onClick={() => handleFilter(key)}
                 >
-                  <FormattedMessage id={preset.labelId} />
+                  <FormattedMessage id={labelId} />
                 </button>
               ))}
-              {activePreset && (
+
+            {hasFilters && hasPresets && (
+              <span className={styles.filterdivider} />
+            )}
+
+            {hasPresets && (
+              <div className={styles.presetWrapper} ref={presetRef}>
                 <button
-                  className={styles.presetClear}
-                  onClick={handleClearDate}
+                  className={`${styles.filterBtn} ${
+                    activePreset ? styles.filterBtnDate : ""
+                  }`}
+                  onClick={() => setShowPresets((v) => !v)}
                 >
-                  <FormattedMessage id="filter.clearDate" />
+                  {activePreset
+                    ? intl.formatMessage({ id: activePreset })
+                    : intl.formatMessage({ id: "filter.setTime" })}{" "}
+                  {showPreset ? "▲" : "▼"}
                 </button>
-              )}
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  )}
 
-
-</div>
-      <div className={styles.tableWrapper}>
-      {loading ? (
-        <TableSkeleton rows={5} cols={8}></TableSkeleton>
-      ) : data.length === 0 ? (
-        <div className={styles.emptyState}>
-          <p>
-            <FormattedMessage
-              id="table.noData"
-              defaultMessage="No records found"
-            />
-          </p>
-        </div>
-      ) : (
-        <table className={styles.table}>
-          <thead className={styles.thead}>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <th
-                    key={header.id}
-                    className={styles.th}
-                    onClick={() =>
-                      header.column.getCanSort() && handleSort(header.column.id)
-                    }
-                    style={{ cursor: "pointer" }}
-                  >
-                    {flexRender(
-                      header.column.columnDef.header,
-                      header.getContext(),
+                {showPreset && (
+                  <div className={styles.presetDropdown}>
+                    {datePresets!.map((preset) => (
+                      <button
+                        key={preset.labelId}
+                        className={`${styles.presetItem} ${
+                          activePreset === preset.labelId
+                            ? styles.presetItemActive
+                            : ""
+                        }`}
+                        onClick={() => handlePreset(preset)}
+                      >
+                        <FormattedMessage id={preset.labelId} />
+                      </button>
+                    ))}
+                    {activePreset && (
+                      <button
+                        className={styles.presetClear}
+                        onClick={handleClearDate}
+                      >
+                        <FormattedMessage id="filter.clearDate" />
+                      </button>
                     )}
-                    {sortColumn === header.id
-                      ? sortDir === "asc"
-                        ? " ↑"
-                        : " ↓"
-                      : ""}
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody>
-            {table.getRowModel().rows.map((row) => (
-              <tr key={row.id} className={styles.tr}>
-                {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id} className={styles.td}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+      <div className={styles.tableWrapper}>
+        {loading ? (
+          <TableSkeleton rows={5} cols={8}></TableSkeleton>
+        ) : data.length === 0 ? (
+          <div className={styles.emptyState}>
+            <div className={styles.emptyIcon}>📭</div>
+            <p className={styles.emptyTitle}>
+              <FormattedMessage
+                id="table.noData"
+          
+              />
+            </p>
+            <span className={styles.emptySub}>
+            <FormattedMessage id="table.errMessage"/>
+             
+            </span>
+          </div>
+        ) : (
+          <table className={styles.table}>
+            <thead className={styles.thead}>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <tr key={headerGroup.id} >
+                  {headerGroup.headers.map((header) => (
+                    <th
+                      key={header.id}
+                      className={styles.th}
+                      onClick={() =>
+                        header.column.getCanSort() &&
+                        handleSort(header.column.id)
+                      }
+                      style={{ cursor: header.column.getCanSort() ? "pointer" : "default" }}
+                    >
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
+                      {sortColumn === header.id
+                        ? sortDir === "asc"
+                          ? " ↑"
+                          : " ↓"
+                        : ""}
+                    </th>
+                  ))}
+                </tr>
+              ))}
+            </thead>
+            <tbody>
+              {table.getRowModel().rows.map((row) => (
+                <tr key={row.id} className={styles.tr}>
+                  {row.getVisibleCells().map((cell) => (
+                    <td key={cell.id} className={styles.td}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
 
-  {data.length!=0 &&  !loading  && <div className={styles.pagination}>
-        <button onClick={() => handlePage(page - 1)} disabled={page === 0}>
-          <FormattedMessage id="table.prev" />
-        </button>
-        <span>
-          <FormattedMessage id="table.page" /> {page + 1}{" "}
-          <FormattedMessage id="table.of" /> {totalPages}
-        </span>
-        <button
-          onClick={() => handlePage(page + 1)}
-          disabled={page >= totalPages - 1}
-        >
-          <FormattedMessage id="table.next" />
-        </button>
-        <div>
-          <FormattedMessage id="table.totalCount" /> = {totalCount}
+      {data.length != 0 && !loading && (
+        <div className={styles.pagination}>
+          <button onClick={() => handlePage(page - 1)} disabled={page === 0}>
+            <FormattedMessage id="table.prev" />
+          </button>
+          <span>
+            <FormattedMessage id="table.page" /> {page + 1}{" "}
+            <FormattedMessage id="table.of" /> {totalPages}
+          </span>
+          <button
+            onClick={() => handlePage(page + 1)}
+            disabled={page >= totalPages - 1}
+          >
+            <FormattedMessage id="table.next" />
+          </button>
+          <div>
+            <FormattedMessage id="table.totalCount" /> = {totalCount}
+          </div>
         </div>
-      </div>} 
+      )}
     </div>
   );
 };

@@ -108,13 +108,7 @@ const ShowTable = () => {
           <img
             src={row.original.avatar_url}
             onClick={() => setSelectedImage(row.original.avatar_url)}
-            style={{
-              width: "30px",
-              height: "30px",
-              borderRadius: "50%",
-              objectFit: "cover",
-              cursor: "pointer",
-            }}
+           className={styles.imageavatar}
           ></img>
         ),
       },
@@ -167,6 +161,22 @@ const ShowTable = () => {
   //   columns,
   //   getCoreRowModel: getCoreRowModel(),
   // });
+    const handleDownload = async () =>{
+    if(!selectedImage) return;
+
+    const res = await fetch(selectedImage);
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `leave${Date.now()}.jpg`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    window.URL.revokeObjectURL(url);
+  }
 
   return (
     <div className={styles.container}>
@@ -218,25 +228,31 @@ const ShowTable = () => {
         filters={DEFAULT_FILTERS}
         datePresets={DEFAULT_DATE_PRESETS}
       ></TanstackTable>
-      {selectedImage && (
-  <div
-    className={styles.modalOverlay}
-    onClick={() => setSelectedImage(null)}
-  >
-    <div
-      className={styles.modalContent}
-      onClick={(e) => e.stopPropagation()}
-    >
-      <button
-        className={styles.closeBtn}
-        onClick={() => setSelectedImage(null)}
-      >
-        ✕
-      </button>
-      <img src={selectedImage} className={styles.modalImage} />
-    </div>
-  </div>
-)}
+     {selectedImage && (
+        <div
+          className={styles.modalOverlay}
+          onClick={() => setSelectedImage(null)}
+        >
+          <div
+            className={styles.modalContent}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className={styles.closeBtn}
+              onClick={() => setSelectedImage(null)}
+            >
+              ✕
+            </button>
+            <a
+              onClick={handleDownload}
+              className={styles.downloadBtn}
+            >
+              ⬇ Download
+            </a>
+            <img src={selectedImage} className={styles.modalImage} />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

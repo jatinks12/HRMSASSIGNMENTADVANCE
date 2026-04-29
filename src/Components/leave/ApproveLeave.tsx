@@ -151,12 +151,8 @@ const ApproveLeave = () => {
           <img
             src={row.original.avatar_url}
             onClick={() => setSelectedImage(row.original.avatar_url)}
-            style={{
-              width: "30px",
-              height: "30px",
-              borderRadius: "50%",
-              objectFit: "cover",
-            }}
+          className={styles.imageavatar}
+           
           ></img>
         ),
       },
@@ -318,9 +314,9 @@ const ApproveLeave = () => {
         <button className={styles.backBtn} onClick={() => Navigate("/leave")}>
           ←
         </button>
-        <h2 className={styles.title}>
+        <div className={styles.title}>
           <FormattedMessage id="approve.title" />
-        </h2>
+        </div>
       </div>
       <TanstackTable
         data={rows}

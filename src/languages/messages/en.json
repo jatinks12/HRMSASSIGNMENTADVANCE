@@ -71,5 +71,7 @@
 "preset.thisMonth": "This month",
 "preset.lastMonth": "Last month",
 "preset.thisYear":  "This year",
-"nav.applyLeave": "Apply Leave"
+"nav.applyLeave": "Apply Leave",
+"table.noData" : "No records found",
+"table.errMessage":"Try adjusting filters or search"
 }

@@ -10,14 +10,15 @@
 .header {
   display: flex;
   align-items: center;
-  gap:10px;
-  
+  min-height: 40px;
+  gap: 10px;
 }
 
 /* Title */
 .title {
   font-size: 19px;
   font-weight: 600;
+  min-height: 32px;
   color: #111827;
   letter-spacing: 0.3px;
 }
@@ -25,7 +26,7 @@
 /* Back button */
 .backBtn {
   width: 36px;
-  height: 36px;
+  height: 32px;
   border-radius: 50%;
   border: none;
   background: #f3f4f6;
@@ -46,7 +47,6 @@
 .backBtn:active {
   transform: scale(0.95);
 }
-
 
 /* Status */
 .status {
@@ -86,7 +86,9 @@
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   font-size: 12px;
-  transition: border 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .input:focus {
@@ -114,17 +116,20 @@
 /* Approve */
 .approveBtn {
   background: #16a34a;
+  min-width: 70px;
   color: #fff;
 }
 
 .approveBtn:hover:not(:disabled) {
   background: #15803d;
+
   transform: translateY(-1px);
 }
 
 /* Reject */
 .rejectBtn {
-  background: #dc2626;
+  background: #dc2626; 
+   min-width: 70px;
   color: #fff;
 }
 
@@ -200,9 +205,17 @@ button:disabled {
   border-radius: 6px;
   text-decoration: none;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .downloadBtn:hover {
   background: #000;
+}
+
+.imageavatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer !important;
 }

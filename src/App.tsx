@@ -88,7 +88,7 @@ const App = () => {
                   checked={loacle === "ja"}
                   onChange={() => setLocale(loacle === "en" ? "ja" : "en")}
                 />
-                <span className="toggle-thumb" />
+                <span className="toggle-thumb"  />
               </span>
               <span>JA</span>
             </label>

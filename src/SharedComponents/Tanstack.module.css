@@ -40,8 +40,18 @@
 }
 
 .th {
+  height: 42px;
+  min-height: 42px;
+  max-height: 42px;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.th {
   padding: 10px;
   text-align: left;
+ 
   font-size: 14px;
   font-weight: 600;
   border-bottom: 1px solid #e5e7eb;
@@ -55,6 +65,7 @@
 .tr {
   border-bottom: 1px solid #f1f1f1;
   transition: background 0.15s ease;
+   height: 44px;
 }
 
 .tr:hover {
@@ -65,6 +76,11 @@
   padding: 10px;
   font-size: 14px;
   color: #333;
+   height: 87px;
+  max-height: 87px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .container {
@@ -110,6 +126,7 @@
 
 .pagination div {
   margin-left: auto;
+  min-height: 51px;
   font-size: 13px;
   color: #1f2937;
   background: #eef2ff;
@@ -130,6 +147,8 @@
 
 .filterBtn {
   padding: 6px 16px;
+  min-width:100px ;
+  min-height: 30px;
   border: 1px solid #d1d5db;
   border-radius: 20px;
   background: #fff;
@@ -245,6 +264,7 @@ button {
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
+  min-height: 50px;
 }
 
 /* No space-between anymore */
@@ -260,11 +280,40 @@ button {
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   font-size: 13px;
-  min-width: 200px;
+  min-width: 260px;
 }
 
 .searchInput:focus {
   border-color: #6366f1;
   box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
   outline: none;
+}
+/* ───────────────── Empty State ───────────────── */
+.emptyState {
+  margin: auto;
+  padding: 48px 20px;
+  text-align: center;
+  border-radius: 14px;
+  background: linear-gradient(145deg, #fafafa, #f4f6fb);
+  border: 1px solid #eef2f7;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.emptyIcon {
+  font-size: 30px;
+  opacity: 0.6;
+}
+
+.emptyTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.emptySub {
+  font-size: 13px;
+  color: #6b7280;
 }

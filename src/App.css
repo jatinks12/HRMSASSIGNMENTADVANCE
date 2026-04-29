@@ -78,6 +78,7 @@
 /* FULL HEIGHT LOGOUT */
 .logoutBtnFull {
   height: 100%;
+  width: 110px;
   padding: 0 20px;
   background: #dc2626;
   border: none;
@@ -109,7 +110,12 @@
   border-radius: 999px;
   cursor: pointer;
 }
-
+.toggle-track input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
 .toggle-thumb {
   position: absolute;
   top: 2px;
