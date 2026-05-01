@@ -34,11 +34,11 @@ const App = () => {
   return (
     <IntlProvider locale={locale} messages={messages[locale]}>
       {!shouldHideHeader && isAuth ? (
-        <div className="appLayout">
-       <Header locale={locale} setLocale={setLocale}/>
         <div className="mainLayout">
-          <Sidebar/>
-
+       <Sidebar/>
+        <div className="appLayout">
+          
+          <Header locale={locale} setLocale={setLocale}/>
           <div className="content">
             <HrmsRoutes/>
           </div>
