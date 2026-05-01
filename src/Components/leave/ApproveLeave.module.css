@@ -1,9 +1,9 @@
 /* Container */
 .container {
   padding: 5px;
-  background: #ffffff;
+  background: var(--bg-page);
   border-radius: 14px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  box-shadow:var(--shadow);
 }
 
 /* Header row (title + button) */
@@ -19,7 +19,7 @@
   font-size: 19px;
   font-weight: 600;
   min-height: 32px;
-  color: #111827;
+  color:var(--text-primary);
   letter-spacing: 0.3px;
 }
 
@@ -30,7 +30,7 @@
   border-radius: 50%;
   border: none;
   background: #f3f4f6;
-  color: #111827;
+  color: var(--text-primary);
   font-size: 18px;
   cursor: pointer;
   display: flex;

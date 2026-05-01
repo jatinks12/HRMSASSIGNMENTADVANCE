@@ -1,35 +1,28 @@
-
 import { useAuth } from "../../Context/AuthContext";
 import { FormattedMessage } from "react-intl";
-import type { Dispatch, SetStateAction } from "react";
+import { useEffect, type Dispatch, type SetStateAction } from "react";
 import type { Locale } from "../../App";
 import styles from "./Header.module.css";
-
+import { useTheme } from "../../Theme/Theme";
 interface Props {
   locale: Locale;
   setLocale: Dispatch<SetStateAction<Locale>>;
 }
 
 const Header = ({ locale, setLocale }: Props) => {
-  const { user,  logout } = useAuth();
-  
-
- 
+  const {  logout } = useAuth();
+  const { toggleTheme, theme } = useTheme();
 
   return (
     <header className={styles.header}>
-      <div className={styles.left}>
+      {/* <div className={styles.left}>
         <div className={styles.logo}>HRMS</div>
 
         <div className={styles.userInfo}>
           <span className={styles.userName}>{user?.name}</span>
           <span className={styles.userEmail}>{user?.email}</span>
         </div>
-      </div>
-
-  
-      
-
+      </div> */}
      
       <div className={styles.right}>
       
@@ -49,7 +42,22 @@ const Header = ({ locale, setLocale }: Props) => {
 
           <span>JA</span>
         </label>
+        
+        <label className={styles.languageToggle}>
+          <span>☀️ Light</span>
 
+          <span className={styles.toggleTrack}>
+            <input
+              type="checkbox"
+              checked={theme === "dark"}   
+              onChange={toggleTheme} 
+            />
+            <span className={styles.toggleThumb} />
+          </span>
+
+          <span>🌙 Dark</span>
+        </label>
+        
         
         <button
           className={styles.logoutBtnFull}
