@@ -1,6 +1,7 @@
 .container {
   padding: 16px;
-  background: #fff;
+  background: var(--bg-page);
+  color: var(--text-primary);
   border-radius: 10px;
 }
 
@@ -8,7 +9,8 @@
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 12px;
-  color: #222;
+  background-color: var(--bg-page);
+  color: var(--text-primary);
 }
 
 /* Status badges */
@@ -45,6 +47,7 @@
   background: #e0f2fe;
   color: #0284c7;
 }
+
 .modalOverlay {
   position: fixed;
   top: 0;
@@ -82,18 +85,21 @@
   cursor: pointer;
   font-weight: bold;
 }
+
 .header {
   display: flex;
   align-items: center;
-  gap:10px;
-  
+  gap: 10px;
+  background: var(--bg-page);
+  color: var(--text-primary);
 }
 
 /* Title */
 .title {
   font-size: 19px;
   font-weight: 600;
-  color: #111827;
+  color: var(--text-primary);
+  background-color: var(--bg-page);
   letter-spacing: 0.3px;
 }
 
@@ -103,8 +109,8 @@
   height: 36px;
   border-radius: 50%;
   border: none;
-  background: #f3f4f6;
-  color: #111827;
+  background: var(--bg-page);
+  color: var(--text-primary);
   font-size: 18px;
   cursor: pointer;
   display: flex;
@@ -121,6 +127,7 @@
 .backBtn:active {
   transform: scale(0.95);
 }
+
 .downloadBtn {
   position: absolute;
   top: -12px;

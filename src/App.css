@@ -1,136 +1,23 @@
-/* HEADER BASE */
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 64px;
-  padding-left: 20px;
-  background: #1f2937;
-  color: #fff;
+body {
+  margin: 0px;
+  padding: 0px;
 }
 
-/* LEFT SECTION */
-.left {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.logo {
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-}
-
-/* USER INFO */
-.userInfo {
+.appLayout {
   display: flex;
   flex-direction: column;
-  font-size: 12px;
-  line-height: 1.2;
+  flex:1;
+  height: 100vh;
 }
 
-.userName {
-  font-weight: 500;
-}
-
-.userEmail {
-  opacity: 0.7;
-  font-size: 11px;
-}
-
-/* NAV CONTAINER (pill style) */
-.navContainer {
+.mainLayout {
   display: flex;
-  background: rgba(255, 255, 255, 0.08);
-  padding: 4px;
-  border-radius: 10px;
-  gap: 4px;
+  flex: 1;
+  overflow: hidden;
 }
 
-/* NAV LINKS */
-.navLink {
-  padding: 6px 14px;
-  border-radius: 8px;
-  text-decoration: none;
-  color: #e5e7eb;
-  font-size: 14px;
-  transition: all 0.2s ease;
-}
-
-.navLink:hover {
-  background: rgba(255, 255, 255, 0.12);
-}
-
-.navLink.active {
-  background: #4f46e5;
-  color: #fff;
-  font-weight: 500;
-}
-
-/* RIGHT SIDE */
-.right {
-  display: flex;
-  align-items: center;
-  height: 100%;
-}
-
-/* FULL HEIGHT LOGOUT */
-.logoutBtnFull {
-  height: 100%;
-  width: 110px;
-  padding: 0 20px;
-  background: #dc2626;
-  border: none;
-  color: white;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.logoutBtnFull:hover {
-  background: #b91c1c;
-}
-
-/* LANGUAGE TOGGLE */
-.language-toggle {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-right: 12px;
-  font-size: 12px;
-}
-
-/* TOGGLE SAME AS YOURS (slightly refined) */
-.toggle-track {
-  position: relative;
-  width: 44px;
-  height: 24px;
-  background: #e5e7eb;
-  border-radius: 999px;
-  cursor: pointer;
-}
-.toggle-track input {
-  position: absolute;
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-.toggle-thumb {
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 20px;
-  height: 20px;
-  background: white;
-  border-radius: 50%;
-  transition: transform 0.2s;
-}
-
-.toggle-track:has(input:checked) {
-  background: #4f46e5;
-}
-
-.toggle-track:has(input:checked) .toggle-thumb {
-  transform: translateX(20px);
+.content {
+  flex: 1;
+  overflow-y: auto;
+  background: #f9fafb;
 }
