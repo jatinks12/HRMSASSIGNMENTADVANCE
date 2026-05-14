@@ -1,45 +1,55 @@
-/* =========================
-   THEME VARIABLES
-========================= */
 
-
-
-/* Global */
-body {
+/* Page container */
+.body {
   font-family: Arial, Helvetica, sans-serif;
-  background-color: var(--bg-page);
-  color: var(--text-primary);
-  transition: all 0.3s ease;
+  background-color: #f4f6f9;
 }
 
-
-/* =========================
-   LAYOUT
-========================= */
-
+/* Main container */
 .container {
   width: 80%;
   margin: auto;
   padding: 20px;
 }
 
-/* Header */
+/* Headings */
 .btnAndheading {
   position: relative;
   display: flex;
   align-items: center;
   height: 60px;
   padding: 0 20px;
-  border-bottom: 1px solid var(--border-color);
-  background: var(--bg-card);
+  border-bottom: 1px solid #e5e7eb;
+  background: #ffffff;
 }
 
-/* Title */
+/* LEFT BUTTON */
+.addBtn {
+  position: absolute;
+  left: 20px;
+
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.addBtn:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+}
+
+/* CENTER TITLE (TRUE CENTER) */
 .title {
   margin: 0 auto;
   font-size: 20px;
   font-weight: 600;
-  color: var(--text-primary);
+  color: #1f2937;
   text-align: center;
 }
 
@@ -48,31 +58,33 @@ body {
   color: #4CAF50;
 }
 
-
-/* =========================
-   BUTTONS
-========================= */
-
-.addBtn {
-  position: absolute;
-  left: 20px;
-  background: linear-gradient(135deg, #4CAF50, #22c55e);
-  color: white;
-  padding: 10px 18px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 14px;
-  transition: all 0.3s ease;
+/* Form Styling */
+.form {
+  background: white;
+  padding: 20px;
+  border-radius: 6px;
+  width: 40%;
+  margin: auto;
+  box-shadow: 0px 3px 10px rgba(0,0,0,0.1);
 }
 
-.addBtn:hover {
-  background: linear-gradient(135deg, #45a049, #16a34a);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow);
+.label {
+  font-weight: bold;
+  display: block;
+  margin-top: 12px;
 }
 
+/* Inputs */
+.input,
+.select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+/* Buttons */
 .button {
   margin-top: 15px;
   padding: 10px 14px;
@@ -81,6 +93,7 @@ body {
   cursor: pointer;
 }
 
+/* Submit button */
 .submitBtn {
   background-color: #4CAF50;
   color: white;
@@ -91,66 +104,7 @@ body {
   background-color: #45a049;
 }
 
-
-/* =========================
-   FORM
-========================= */
-
-.form {
-  background: var(--bg-card);
-  padding: 20px;
-  border-radius: 6px;
-  width: 40%;
-  margin: auto;
-  box-shadow: var(--shadow);
-}
-
-.label {
-  font-weight: bold;
-  display: block;
-  margin-top: 12px;
-}
-
-.input,
-.select {
-  width: 100%;
-  padding: 10px;
-  margin-top: 6px;
-  border-radius: 5px;
-  border: 1px solid var(--border-color);
-  background: var(--bg-card);
-  color: var(--text-primary);
-}
-
-
-/* =========================
-   DISABLED FIELD
-========================= */
-
-.disabledFieldWrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.disabledInput {
-  background-color: var(--border-color) !important;
-  color: var(--text-primary) !important;
-  cursor: not-allowed;
-}
-
-.disabledText {
-  display: block;
-  margin-top: 4px;
-  font-size: 12px;
-  color: var(--text-primary);
-}
-
-
-/* =========================
-   MODAL
-========================= */
-
+/* Modal */
 .view {
   position: fixed;
   top: 0;
@@ -164,130 +118,45 @@ body {
 }
 
 .viewModal {
-  background: var(--bg-card);
+  background: white;
   padding: 25px;
   border-radius: 8px;
   width: 350px;
   text-align: center;
-  box-shadow: var(--shadow);
-  color: var(--text-primary);
+  box-shadow: 0px 4px 15px rgba(0,0,0,0.3);
 }
 
-
-/* =========================
-   TABLE
-========================= */
-
+/* Table wrapper fix */
 .tableWrapper {
   margin-top: 5px;
   width: 100%;
+  /* overflow-x: auto;   KEY FIX */
 }
 
+/* Fix PrimeReact table overflow */
 :global(.p-datatable) {
-  min-width: 900px;
-  background: var(--bg-card);
-  color: var(--text-primary);
+  min-width: 900px;   /* ensures proper column spacing */
+ 
 }
 
-:global(.p-datatable-thead > tr > th) {
-  white-space: nowrap;
-  background: var(--bg-card);
-  color: var(--text-primary);
-  border-color: var(--border-color);
-}
-
-:global(.p-datatable-tbody > tr > td) {
-  white-space: nowrap;
-  border-color: var(--border-color);
-}
-
-.tableContainer {
-  height: 530px;
-  display: flex;
-  flex-direction: column;
-}
-
-.tableContent {
-  flex: 1;
-}
-
-.p-datatable-wrapper {
-  min-height: 350px;
-  max-height: 350px;
-}
-
-.p-datatable td,
-.p-datatable th {
-  padding: 8px 10px !important;
-}
-
-.p-datatable .p-datatable-tbody > tr {
-  height: 40px;
-}
-
-
-/* =========================
-   PAGINATOR
-========================= */
-
-.p-paginator {
+/* Make paginator visible */
+:global(.p-paginator) {
   margin-top: 10px;
   display: flex;
   justify-content: center;
-  flex-shrink: 0;
 }
 
-.tableFooter {
-  position: relative;
-  padding: 10px 15px;
+/* Fix table header */
+:global(.p-datatable-thead > tr > th) {
+  white-space: nowrap;
+
 }
 
-.totalCount {
-  position: absolute;
-  right: 15px;
-  top: 92%;
-  transform: translateY(-50%);
-  font-weight: 600;
+/* Fix table cells */
+:global(.p-datatable-tbody > tr > td) {
+  white-space: nowrap;
+  
 }
-
-/* Custom arrows */
-.p-paginator-first::before { content: "<<"; }
-.p-paginator-prev::before { content: "<"; }
-.p-paginator-next::before { content: ">"; }
-.p-paginator-last::before { content: ">>"; }
-
-.p-paginator-first .pi,
-.p-paginator-prev .pi,
-.p-paginator-next .pi,
-.p-paginator-last .pi {
-  display: none;
-}
-
-
-/* =========================
-   AVATAR
-========================= */
-
-.avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid var(--border-color);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.avatar:hover {
-  transform: scale(1.2);
-  border-color: #3b82f6;
-  box-shadow: var(--shadow);
-}
-
-
-/* =========================
-   LOADER
-========================= */
 
 .custom-loader {
   display: flex;
@@ -300,7 +169,7 @@ body {
 .spinner {
   width: 50px;
   height: 50px;
-  border: 5px solid var(--border-color);
+  border: 5px solid #ddd;
   border-top: 5px solid #3b82f6;
   border-radius: 50%;
   animation: spin 1s linear infinite;
@@ -312,63 +181,116 @@ body {
     transform: rotate(360deg);
   }
 }
+.addBtn {
+  background: linear-gradient(135deg, #4CAF50, #22c55e);
+  color: white;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 15px;
+  transition: all 0.3s ease;
+}
 
-
-/* =========================
-   SKELETON
-========================= */
-
-.skeletonWrapper {
-  padding: 10px;
+.addBtn:hover {
+  background: linear-gradient(135deg, #45a049, #16a34a);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.tableContainer {
+  height: 530px;              /* TOTAL FIXED HEIGHT */
   display: flex;
   flex-direction: column;
-  gap: 12px;
 }
 
-.skeletonRow {
-  display: grid;
-  grid-template-columns: 60px 1fr 1fr 1fr 1fr 1fr;
-  gap: 12px;
-  align-items: center;
+/* Table wrapper */
+.tableContent {
+  flex: 1;
 }
 
-.skeletonCell {
-  height: 50px;
-  border-radius: 6px;
-  background: linear-gradient(
-    90deg,
-    var(--border-color) 25%,
-    #d1d5db 50%,
-    var(--border-color) 75%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.2s infinite;
+/* Force table body height */
+.p-datatable-wrapper {
+  min-height: 350px;  
+  max-height: 350px;        /* 
+   reserve space */
 }
 
-.skeletonAvatar {
+/* Keep paginator fixed */
+.p-paginator {
+  flex-shrink: 0;
+}.p-datatable td {
+  padding: 8px 10px !important;   /*  reduce height */
+}
+
+.p-datatable th {
+  padding: 8px 10px !important;
+}
+
+.p-datatable .p-datatable-tbody > tr {
+  height: 40px;                  /* fixed row height */
+}
+.tableFooter {
+  position: relative;
+  padding: 10px 15px;
+}
+
+/* Center paginator */
+.p-paginator {
+  justify-content: center;
+}
+
+/* Push total to right */
+.totalCount {
+  position: absolute;
+  right: 15px;
+  top: 92%;
+  transform: translateY(-50%);
+  font-weight: 600;
+}
+.avatar {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: linear-gradient(
-    90deg,
-    var(--border-color) 25%,
-    #d1d5db 50%,
-    var(--border-color) 75%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.2s infinite;
+  object-fit: cover;
+  border: 2px solid #ddd;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+/*  Hover Effect */
+.avatar:hover {
+  transform: scale(1.2);
+  border-color: #3b82f6;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+/* Wrapper */
+.disabledFieldWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
+/* Disabled input styling */
+.disabledInput {
+  background-color: #f3f4f6 !important;
+  color: #6b7280 !important;
+  cursor: not-allowed;
+}
 
-/* =========================
-   DIALOG HEADER
-========================= */
+.disabledInput {
+  background-color: #f3f4f6 !important;
+  color: #6b7280 !important;
+  cursor: not-allowed;
+}
 
+.disabledText {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #6b7280;
+}
 .dialogHeader {
   display: flex;
   justify-content: space-between;
@@ -376,14 +298,99 @@ body {
   width: 100%;
 }
 
+/* Download icon */
 .downloadIcon {
   font-size: 18px;
-  color: var(--text-primary);
+  color: #374151;
   cursor: pointer;
-  transition: 0.3s ease;
+  transition: 0.5s ease;
+
 }
 
 .downloadIcon:hover {
   color: #3b82f6;
   transform: scale(1.2);
+}
+
+
+/* First (<<) */
+.p-paginator-first::before {
+  content: "<<";
+}
+
+/* Prev (<) */
+.p-paginator-prev::before {
+  content: "<";
+}
+
+/* Next (>) */
+.p-paginator-next::before {
+  content: ">";
+}
+
+/* Last (>>) */
+.p-paginator-last::before {
+  content: ">>";
+}
+
+/* Hide default icons */
+.p-paginator-first .pi,
+.p-paginator-prev .pi,
+.p-paginator-next .pi,
+.p-paginator-last .pi {
+  display: none;
+} 
+.skeletonWrapper {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Each row like table row */
+.skeletonRow {
+  display: grid;
+  grid-template-columns: 60px 1fr 1fr 1fr 1fr 1fr; 
+  /* Avatar + 5 columns */
+  gap: 12px;
+  align-items: center;
+}
+
+/* Each cell */
+.skeletonCell {
+  height: 50px;
+  border-radius: 6px;
+  background: linear-gradient(
+    90deg,
+    #f0f0f0 25%,
+    #e0e0e0 50%,
+    #f0f0f0 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+}
+
+/* Avatar (first column) */
+.skeletonAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(
+    90deg,
+    #f0f0f0 25%,
+    #e0e0e0 50%,
+    #f0f0f0 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+}
+
+/* Animation */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
