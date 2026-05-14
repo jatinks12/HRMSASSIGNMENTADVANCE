@@ -1,30 +1,19 @@
-/* =========================
-   CONTAINER
-========================= */
-
 .container {
   width: 100%;
   display: flex;
   flex-direction: column;
-  height: 100%;
-  background-color: var(--bg-page);
-  color: var(--text-primary);
+  
 }
 
-
-/* =========================
-   SEARCH INPUT
-========================= */
-
 .searchInput {
-  padding: 7px 10px;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  font-size: 13px;
-  min-width: 260px;
-  background: var(--bg-card);
-  color: var(--text-primary);
+  padding: 10px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 14px;
+  width: 260px;
+  background: #ffffff;
   transition: all 0.25s ease;
+  margin-bottom: 12px; /* 👈 spacing from table */
 }
 
 .searchInput::placeholder {
@@ -33,70 +22,72 @@
 
 .searchInput:focus {
   border-color: #6366f1;
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
-  outline: none;
+  box-shadow: 0 6px 18px rgba(99, 102, 241, 0.15);
+  transform: translateY(-1px);
 }
 
-
-/* =========================
-   TABLE
-========================= */
-
 .table {
+
   width: 100%;
   border-collapse: collapse;
-  background: var(--bg-card);
-  color: var(--text-primary);
+  background: #fff;
   border-radius: 8px;
   overflow: hidden;
 }
 
 .thead {
-  background: var(--border-color);
+  background: #f5f6fa;
 }
 
 .th {
   height: 42px;
-  padding: 10px;
-  text-align: left;
-  font-size: 14px;
-  font-weight: 600;
-  border-bottom: 1px solid var(--border-color);
+  min-height: 42px;
+  max-height: 42px;
+
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.th {
+  padding: 10px;
+  text-align: left;
+ 
+  font-size: 14px;
+  font-weight: 600;
+  border-bottom: 1px solid #e5e7eb;
   user-select: none;
 }
 
 .th:hover {
-  background: rgba(99, 102, 241, 0.08);
+  background: #eef2ff;
 }
 
 .tr {
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid #f1f1f1;
   transition: background 0.15s ease;
-  height: 44px;
+   height: 44px;
 }
 
 .tr:hover {
-  background: rgba(0, 0, 0, 0.03);
+  background: #fafafa;
 }
 
 .td {
   padding: 10px;
   font-size: 14px;
-  color: var(--text-primary);
-  height: 87px;
+  color: #333;
+   height: 87px;
   max-height: 87px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-
-/* =========================
-   PAGINATION
-========================= */
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
 
 .pagination {
   display: flex;
@@ -104,8 +95,8 @@
   gap: 14px;
   margin-top: auto;
   padding: 5px 7px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
+  background: #fafafa;
+  border: 1px solid #eee;
   border-radius: 8px;
 }
 
@@ -120,66 +111,64 @@
 
 .pagination button:hover:not(:disabled) {
   background: #4338ca;
+  color: #ffffff; /* force strong contrast */
 }
 
 .pagination button:disabled {
-  background: var(--border-color);
-  color: #9ca3af;
+  background: #e5e7eb;
+  color: #9ca3af; /* readable disabled state */
 }
 
 .pagination span {
   font-size: 14px;
-  color: var(--text-primary);
+  color: #374151;
 }
 
 .pagination div {
   margin-left: auto;
   min-height: 51px;
   font-size: 13px;
-  color: var(--text-primary);
-  background: rgba(99, 102, 241, 0.1);
+  color: #1f2937;
+  background: #eef2ff;
   padding: 5px 12px;
   border-radius: 6px;
-  font-weight: 600;
+  font-weight: 600; /* increased */
+  letter-spacing: 0.2px;
 }
 
-
-/* =========================
-   FILTER BAR
-========================= */
-
+/* ── Filter bar ─────────────────────────────────────────────── */
 .filterBar {
   display: flex;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
+  margin-bottom: 14px;
 }
 
 .filterBtn {
   padding: 6px 16px;
-  min-width: 100px;
+  min-width:100px ;
   min-height: 30px;
-  border: 1px solid var(--border-color);
+  border: 1px solid #d1d5db;
   border-radius: 20px;
-  background: var(--bg-card);
+  background: #fff;
   font-size: 13px;
   cursor: pointer;
   transition: all 0.18s ease;
   white-space: nowrap;
-  color: var(--text-primary);
+  color: #374151; /* base text color */
 }
 
 .filterBtn:hover {
-  background: var(--border-color);
+  background: #f3f4f6;
+  color: #111827; /* darker on hover */
 }
-
 .filterBtnActive {
   background: #3b82f6;
   color: #fff;
   border-color: #3b82f6;
   font-weight: 600;
 }
-
 .filterBtnDate {
   background: #8b5cf6;
   color: #fff;
@@ -189,15 +178,11 @@
 .filterDivider {
   width: 1px;
   height: 24px;
-  background: var(--border-color);
+  background: #e5e7eb;
   margin: 0 4px;
 }
 
-
-/* =========================
-   PRESET DROPDOWN
-========================= */
-
+/* ── Date preset dropdown ───────────────────────────────────── */
 .presetWrapper {
   position: relative;
 }
@@ -207,10 +192,10 @@
   top: calc(100% + 8px);
   left: 0;
   z-index: 200;
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
+  background: #fff;
+  border: 1px solid #e5e7eb;
   border-radius: 10px;
-  box-shadow: var(--shadow);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.11);
   padding: 6px;
   display: flex;
   flex-direction: column;
@@ -227,62 +212,90 @@
   font-size: 13px;
   cursor: pointer;
   transition: background 0.14s;
-  color: var(--text-primary);
 }
-
-.presetItem:hover {
-  background: var(--border-color);
-}
-
-.presetItemActive {
-  background: rgba(139, 92, 246, 0.15);
-  color: #7c3aed;
-  font-weight: 500;
-}
+.presetItem:hover      { background: #f3f4f6; }
+.presetItemActive      { background: #ede9fe; color: #7c3aed; font-weight: 500; }
 
 .presetClear {
   margin-top: 4px;
   padding: 7px 14px;
   text-align: left;
   border: none;
-  border-top: 1px solid var(--border-color);
+  border-top: 1px solid #f3f4f6;
   border-radius: 6px;
   background: transparent;
   font-size: 12px;
   color: #ef4444;
   cursor: pointer;
 }
+.presetClear:hover { background: #fef2f2; }
 
-.presetClear:hover {
-  background: rgba(239, 68, 68, 0.1);
-}
-
-
-/* =========================
-   DATE BADGE
-========================= */
-
+/* ── Active date badge ──────────────────────────────────────── */
 .dateBadge {
   font-size: 11px;
   padding: 3px 10px;
-  background: rgba(139, 92, 246, 0.15);
+  background: #ede9fe;
   color: #6d28d9;
   border-radius: 12px;
   font-weight: 500;
 }
+button {
+  -webkit-font-smoothing: antialiased;
+}
+.emptyState {
+  padding: 40px 20px;
+  text-align: center;
+  border: 1px dashed #e5e7eb;
+  border-radius: 10px;
+  background: #fafafa;
+  color: #6b7280;
+  font-size: 14px;
+}
 
+.tableWrapper {
+  min-height: 560px; /* adjust based on your design */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+/* Top row: filters + search */
+.topBar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  min-height: 50px;
+}
 
-/* =========================
-   EMPTY STATE
-========================= */
+/* No space-between anymore */
+.filterBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
 
+.searchInput {
+  padding: 7px 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 13px;
+  min-width: 260px;
+}
+
+.searchInput:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
+  outline: none;
+}
+/* ───────────────── Empty State ───────────────── */
 .emptyState {
   margin: auto;
   padding: 48px 20px;
   text-align: center;
   border-radius: 14px;
-  background: var(--bg-card);
-  border: 1px dashed var(--border-color);
+  background: linear-gradient(145deg, #fafafa, #f4f6fb);
+  border: 1px solid #eef2f7;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -297,44 +310,10 @@
 .emptyTitle {
   font-size: 15px;
   font-weight: 600;
-  color: var(--text-primary);
+  color: #111827;
 }
 
 .emptySub {
   font-size: 13px;
-  color: #9ca3af;
-}
-
-
-/* =========================
-   TOP BAR
-========================= */
-
-.topBar {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  min-height: 50px;
-}
-
-
-/* =========================
-   TABLE WRAPPER
-========================= */
-
-.tableWrapper {
-  min-height: 560px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-
-/* =========================
-   BUTTON SMOOTHING
-========================= */
-
-button {
-  -webkit-font-smoothing: antialiased;
+  color: #6b7280;
 }
